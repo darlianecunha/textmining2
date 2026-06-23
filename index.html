@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>PDF Terms → VOSviewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0B1120;--bg2:#111827;--bg3:#1A2436;--bd:rgba(255,255,255,0.08);--bdh:rgba(255,255,255,0.18);--tx:#F0F4F8;--tx2:#94A3B8;--tx3:#64748B;--ac:#7FB5FF;--acd:rgba(127,181,255,0.12);--ach:#A9CDFF;--dg:#F0997B;--r:10px;--rl:16px;--fn:'Sora',sans-serif;--mo:'JetBrains Mono',monospace}
+html{scroll-behavior:smooth}
+body{font-family:var(--fn);background:var(--bg);color:var(--tx);font-size:15px;line-height:1.6;min-height:100vh}
+.wrap{max-width:880px;margin:0 auto;padding:0 1.5rem}
+.hdr{border-bottom:1px solid var(--bd);background:rgba(11,17,32,.92);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100}
+.hdr-in{max-width:880px;margin:0 auto;padding:0 1.5rem;height:58px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-tx{font-family:var(--mo);font-size:14px;font-weight:500;color:var(--tx);letter-spacing:-.02em}
+.ac{color:var(--ac)}
+.nav{display:flex;gap:1.5rem}
+.nav a{font-size:13px;color:var(--tx2);text-decoration:none;transition:color .2s}
+.nav a:hover{color:var(--tx)}
+.hero{padding:4.5rem 0 3rem;border-bottom:1px solid var(--bd)}
+.hero-lbl{font-family:var(--mo);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ac);margin-bottom:1rem}
+.hero-h1{font-size:clamp(1.9rem,5vw,2.7rem);font-weight:600;line-height:1.15;letter-spacing:-.03em;margin-bottom:1.2rem}
+.hero-sub{font-size:15px;color:var(--tx2);max-width:580px;line-height:1.75}
+.hero-badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:1.5rem}
+.badge{font-family:var(--mo);font-size:11px;padding:4px 12px;border-radius:99px;border:1px solid var(--bd);color:var(--tx3)}
+.badge.hi{border-color:rgba(127,181,255,.35);color:var(--ac)}
+.sec{padding:2.5rem 0}
+.sec-title{font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--tx3);margin-bottom:1.25rem}
+.drop{position:relative;border:1.5px dashed var(--bdh);border-radius:var(--rl);padding:3rem 2rem;text-align:center;cursor:pointer;transition:border-color .25s,background .25s;background:var(--bg2)}
+.drop:hover,.drop:focus-visible{border-color:var(--ac);background:var(--acd);outline:none}
+.drop.over{border-color:var(--ac);background:var(--acd)}
+.drop input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.drop-in{pointer-events:none}
+.drop-ico{color:var(--ac);margin-bottom:.9rem;display:inline-block}
+.drop-h{font-size:16px;font-weight:500;margin-bottom:.35rem}
+.drop-s{font-size:13px;color:var(--tx2)}
+.drop-link{color:var(--ac)}
+#files{margin-top:1rem;display:flex;flex-direction:column;gap:7px}
+.frow{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:.7rem 1rem;transition:border-color .2s}
+.frow:hover{border-color:var(--bdh)}
+.frow .fn{font-size:13px;font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.frow .fw{font-family:var(--mo);font-size:12px;color:var(--ac);flex-shrink:0;min-width:90px;text-align:right}
+.pb{flex:0 0 70px}
+.pbar{height:3px;background:var(--bd);border-radius:2px;overflow:hidden}
+.pfill{height:100%;background:var(--ac);border-radius:2px;transition:width .3s}
+.frm{flex-shrink:0;background:none;border:none;color:var(--tx3);cursor:pointer;padding:2px 4px;font-size:18px;transition:color .2s;line-height:1}
+.frm:hover{color:var(--dg)}
+#msg{min-height:1.5rem;margin-top:.6rem}
+.err{font-size:13px;color:var(--dg);padding:.45rem .75rem;background:rgba(240,153,123,.1);border-radius:var(--r);border:1px solid rgba(240,153,123,.2)}
+.params-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.param-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:1rem}
+.param-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--tx3);margin-bottom:.5rem;display:block}
+.param-row{display:flex;align-items:center;gap:8px}
+.param-row input[type=range]{flex:1}
+.param-val{font-family:var(--mo);font-size:13px;color:var(--ac);min-width:28px;text-align:right}
+.param-hint{font-size:11px;color:var(--tx3);margin-top:.35rem}
+.seg{display:flex;gap:6px;background:var(--bg3);border:1px solid var(--bd);border-radius:var(--r);padding:4px}
+.seg button{flex:1;background:none;border:none;color:var(--tx2);font-family:var(--fn);font-size:12px;font-weight:500;padding:6px 8px;border-radius:7px;cursor:pointer;transition:all .2s}
+.seg button.on{background:var(--ac);color:#04223F}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:1.5rem}
+.btn{display:inline-flex;align-items:center;gap:7px;font-family:var(--fn);font-size:13px;font-weight:500;padding:9px 18px;border-radius:var(--r);cursor:pointer;transition:all .2s;border:none;text-decoration:none}
+.btn-primary{background:var(--ac);color:#04223F}
+.btn-primary:hover{background:var(--ach)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed}
+.btn-ghost{background:var(--bg2);color:var(--tx2);border:1px solid var(--bd)}
+.btn-ghost:hover{border-color:var(--bdh);color:var(--tx)}
+.btn-ghost:disabled{opacity:.4;cursor:not-allowed}
+.btn-vos{background:#0F6E56;color:#E1F5EE}
+.btn-vos:hover{background:#1D9E75}
+.btn-vos:disabled{opacity:.4;cursor:not-allowed}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:9px;margin-bottom:1.5rem}
+.sc{background:var(--bg3);border:1px solid var(--bd);border-radius:var(--r);padding:.9rem;display:flex;flex-direction:column;gap:5px}
+.sl{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--tx3)}
+.sv{font-family:var(--mo);font-size:21px;font-weight:500;color:var(--tx)}
+.sv.hi{color:var(--ac)}
+.net-preview{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rl);padding:1.25rem 1.5rem;margin-top:1.25rem}
+.net-title{font-size:13px;font-weight:500;color:var(--tx2);margin-bottom:1rem}
+.net-items{display:flex;flex-wrap:wrap;gap:6px;max-height:220px;overflow-y:auto}
+.ni{font-family:var(--mo);font-size:11px;padding:3px 10px;background:var(--bg3);border:1px solid var(--bd);border-radius:99px;color:var(--tx);display:flex;gap:6px;align-items:center}
+.ni .dot{width:8px;height:8px;border-radius:99px;flex-shrink:0}
+.ni .nc{color:var(--tx2)}
+.notfound{margin-top:1rem;background:rgba(240,153,123,.08);border:1px solid rgba(240,153,123,.2);border-radius:var(--r);padding:.9rem 1.1rem}
+.notfound .nf-t{font-size:12px;font-weight:500;color:var(--dg);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.05em}
+.notfound .nf-list{display:flex;flex-wrap:wrap;gap:6px}
+.notfound .nf-i{font-family:var(--mo);font-size:11px;padding:3px 9px;background:rgba(240,153,123,.1);border:1px solid rgba(240,153,123,.22);border-radius:99px;color:var(--dg)}
+.divider{height:1px;background:var(--bd);margin:2rem 0}
+.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+@media(max-width:580px){.flow{grid-template-columns:1fr}}
+.flow-step{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rl);padding:1.25rem}
+.flow-n{font-family:var(--mo);font-size:11px;color:var(--ac);letter-spacing:.07em;margin-bottom:.6rem;display:block}
+.flow-step h3{font-size:14px;font-weight:500;margin-bottom:.4rem}
+.flow-step p{font-size:13px;color:var(--tx2);line-height:1.6}
+.faq-list{display:flex;flex-direction:column;gap:7px}
+.fi{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;transition:border-color .2s}
+.fi:hover{border-color:var(--bdh)}
+.fi summary{padding:.9rem 1.2rem;font-size:13px;font-weight:500;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.fi summary::-webkit-details-marker{display:none}
+.fi summary::after{content:'+';font-family:var(--mo);font-size:18px;color:var(--ac);transition:transform .2s;flex-shrink:0}
+.fi[open] summary::after{transform:rotate(45deg)}
+.fi p{padding:0 1.2rem .9rem;font-size:13px;color:var(--tx2);line-height:1.7;border-top:1px solid var(--bd);padding-top:.7rem}
+.fi code{font-family:var(--mo);font-size:12px;background:var(--bg3);padding:1px 6px;border-radius:5px;color:var(--ac)}
+footer{border-top:1px solid var(--bd);padding:2rem 0;background:var(--bg2);text-align:center}
+footer p{font-size:12px;color:var(--tx3);margin-top:.3rem}
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(1rem);background:var(--ac);color:#04223F;font-size:13px;font-weight:500;padding:8px 20px;border-radius:99px;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:999}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.kw-block{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:1.1rem}
+.kw-block textarea{width:100%;background:var(--bg3);border:1px solid var(--bd);border-radius:var(--r);padding:10px 12px;font-family:var(--mo);font-size:12px;color:var(--tx);outline:none;transition:border-color .2s;resize:vertical;min-height:140px;line-height:1.7}
+.kw-block textarea:focus{border-color:var(--ac)}
+.kw-block textarea::placeholder{color:var(--tx3)}
+.kw-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:.7rem;align-items:center}
+.btn-mini{background:var(--bg3);color:var(--tx2);border:1px solid var(--bd);border-radius:var(--r);padding:6px 12px;font-family:var(--fn);font-size:12px;font-weight:500;cursor:pointer;transition:all .2s}
+.btn-mini:hover{border-color:var(--ac);color:var(--ac)}
+.kw-preview{margin-top:1rem;display:flex;flex-direction:column;gap:.8rem}
+.kw-cat{background:var(--bg3);border:1px solid var(--bd);border-radius:var(--r);padding:.75rem .9rem}
+.kw-cat-h{font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:500;margin-bottom:.55rem;display:flex;align-items:center;gap:7px}
+.kw-cat-h .dot{width:9px;height:9px;border-radius:99px}
+.kw-terms{display:flex;flex-wrap:wrap;gap:6px}
+.kw-term{font-family:var(--mo);font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--bd);border-radius:99px;color:var(--tx)}
+.kw-term span{color:var(--tx3)}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.modal{background:var(--bg2);border:1px solid var(--bdh);border-radius:var(--rl);max-width:480px;width:100%;padding:2rem}
+.modal h2{font-size:18px;font-weight:600;margin-bottom:1.2rem}
+.modal-steps{display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.5rem}
+.mstep{display:flex;gap:.75rem;align-items:flex-start}
+.mstep-n{font-family:var(--mo);font-size:11px;color:var(--ac);background:var(--acd);border-radius:99px;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.mstep p{font-size:14px;color:var(--tx2);line-height:1.6}
+.mstep strong{color:var(--tx)}
+.modal-btns{display:flex;gap:9px;flex-wrap:wrap}
+@media(max-width:520px){.nav{display:none}.hero{padding:3rem 0 2rem}.hero-h1{font-size:1.75rem}}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-in">
+    <div class="logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="9" cy="9" r="6.2" stroke="#7FB5FF" stroke-width="1.4" fill="none"/>
+        <line x1="13.6" y1="13.6" x2="21" y2="21" stroke="#7FB5FF" stroke-width="1.4" stroke-linecap="round"/>
+        <line x1="6" y1="8" x2="12" y2="8" stroke="#7FB5FF" stroke-width="1.3" stroke-linecap="round"/>
+        <line x1="6" y1="11" x2="10" y2="11" stroke="#7FB5FF" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+      <span class="logo-tx">PDF<span class="ac">Terms</span></span>
+    </div>
+    <nav class="nav">
+      <a href="#termos">Termos</a>
+      <a href="#params">Parâmetros</a>
+      <a href="#como">Como usar</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <p class="hero-lbl">Busca dirigida · Vocabulário controlado</p>
+      <h1 class="hero-h1">Conte seus termos de busca<br>e gere a rede no VOSviewer</h1>
+      <p class="hero-sub">Você define as palavras-chave, o app conta as ocorrências e as co-ocorrências entre os seus PDFs e gera um arquivo JSON pronto para o VOSviewer Online. Com sinônimos agrupados, termos compostos, curinga e categorias temáticas.</p>
+      <div class="hero-badges">
+        <span class="badge hi">VOSviewer JSON</span>
+        <span class="badge">Vocabulário controlado</span>
+        <span class="badge">Sinônimos + curinga</span>
+        <span class="badge">Contagem binária por documento</span>
+        <span class="badge">100% local</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- UPLOAD -->
+  <section class="sec">
+    <div class="wrap">
+      <p class="sec-title">1 — Carregar PDFs</p>
+      <div class="drop" id="drop" role="button" tabindex="0" aria-label="Área de upload de PDFs">
+        <input type="file" accept=".pdf" multiple id="finput" aria-label="Seleccionar PDFs"/>
+        <div class="drop-in">
+          <div class="drop-ico">
+            <svg width="38" height="38" viewBox="0 0 38 38" fill="none" aria-hidden="true">
+              <rect x="5" y="3" width="20" height="26" rx="3" stroke="currentColor" stroke-width="1.4" fill="none" opacity=".4"/>
+              <line x1="10" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+              <line x1="10" y1="15" x2="21" y2="15" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+              <line x1="10" y1="20" x2="16" y2="20" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+              <circle cx="28" cy="28" r="7.5" fill="#0F6E56"/>
+              <line x1="28" y1="24.5" x2="28" y2="31.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+              <line x1="24.5" y1="28" x2="31.5" y2="28" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <p class="drop-h">Arraste PDFs aqui</p>
+          <p class="drop-s">ou <span class="drop-link">clique para seleccionar</span> — múltiplos arquivos suportados</p>
+        </div>
+      </div>
+      <div id="msg"></div>
+      <div id="files"></div>
+    </div>
+  </section>
+
+  <!-- TERMOS -->
+  <section class="sec" id="termos" style="border-top:1px solid var(--bd)">
+    <div class="wrap">
+      <p class="sec-title">2 — Termos de busca (vocabulário controlado)</p>
+      <div class="kw-block">
+        <span class="param-lbl">Digite um termo por linha. O app expande os sinônimos pela biblioteca de sustentabilidade portuária</span>
+        <textarea id="kw-input" spellcheck="false" autocorrect="off" placeholder="CO2&#10;água de lastro&#10;shore power&#10;eficiência energética&#10;ESG&#10;dragagem&#10;ODS"></textarea>
+        <div class="kw-actions">
+          <label style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--tx2);cursor:pointer">
+            <input type="checkbox" id="auto-expand" checked style="accent-color:var(--ac);width:15px;height:15px"/>
+            Expandir sinônimos automaticamente
+          </label>
+          <button class="btn-mini" onclick="loadExample()">Carregar exemplo</button>
+          <button class="btn-mini" onclick="toggleLib()">Ver biblioteca</button>
+          <button class="btn-mini" onclick="clearKw()">Limpar</button>
+          <button class="btn-mini" onclick="downloadKw()">Salvar (.txt)</button>
+          <button class="btn-mini" onclick="document.getElementById('kw-file').click()">Carregar (.txt)</button>
+          <input type="file" id="kw-file" accept=".txt" style="display:none"/>
+          <span id="kw-count" style="font-family:var(--mo);font-size:11px;color:var(--tx3);margin-left:auto"></span>
+        </div>
+        <p class="param-hint" style="margin-top:.5rem">Avançado: agrupe sinônimos manualmente com <code style="font-family:var(--mo);color:var(--ac)">=</code>, defina categoria entre <code style="font-family:var(--mo);color:var(--ac)">[ ]</code> e use curinga com <code style="font-family:var(--mo);color:var(--ac)">*</code>. Linhas manuais têm prioridade sobre a biblioteca.</p>
+        <div id="lib-browser" style="display:none"></div>
+        <div class="kw-preview" id="kw-preview"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARAMS -->
+  <section class="sec" id="params">
+    <div class="wrap">
+      <p class="sec-title">3 — Parâmetros da rede</p>
+      <div class="params-grid">
+        <div class="param-card">
+          <span class="param-lbl">Escopo da co-ocorrência</span>
+          <div class="seg" id="seg-scope">
+            <button class="on" data-v="doc" onclick="setScope('doc')">Documento</button>
+            <button data-v="sent" onclick="setScope('sent')">Frase</button>
+          </div>
+          <p class="param-hint" id="scope-hint">Termos co-ocorrem se aparecem no mesmo PDF (binário, padrão bibliométrico)</p>
+        </div>
+        <div class="param-card">
+          <span class="param-lbl">Ocorrência mínima</span>
+          <div class="param-row">
+            <input type="range" min="1" max="20" value="1" id="p-minocc" step="1" oninput="document.getElementById('v-minocc').textContent=this.value"/>
+            <span class="param-val" id="v-minocc">1</span>
+          </div>
+          <p class="param-hint">Mínimo para um termo entrar na rede</p>
+        </div>
+        <div class="param-card">
+          <span class="param-lbl">Co-ocorrência mínima</span>
+          <div class="param-row">
+            <input type="range" min="1" max="15" value="1" id="p-mincooc" step="1" oninput="document.getElementById('v-mincooc').textContent=this.value"/>
+            <span class="param-val" id="v-mincooc">1</span>
+          </div>
+          <p class="param-hint">Força mínima de ligação entre dois termos</p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="btn-gen" onclick="generate()" disabled>
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="6.5" cy="6.5" r="4.2" stroke="currentColor" stroke-width="1.3"/><line x1="9.6" y1="9.6" x2="13" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Contar termos e gerar rede
+        </button>
+        <button class="btn btn-ghost" id="btn-clear" onclick="clearAll()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 4h10M5 4V2h4v2M4.5 4l.5 8h4l.5-8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Limpar PDFs
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <div id="results" style="display:none">
+    <div class="divider"></div>
+    <section class="sec">
+      <div class="wrap">
+        <p class="sec-title">4 — Resultado</p>
+
+        <div class="stats-grid" id="sgrid"></div>
+
+        <div class="net-preview">
+          <p class="net-title">Termos na rede (por ocorrência)</p>
+          <div class="net-items" id="net-items"></div>
+          <div id="notfound"></div>
+        </div>
+
+        <div class="actions" style="margin-top:1.5rem">
+          <button class="btn btn-primary" onclick="downloadJSON()">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M7.5 2v8M4 7.5L7.5 11 11 7.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12h11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            Baixar JSON para VOSviewer
+          </button>
+          <button class="btn btn-vos" onclick="openVOS()">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M10 2h3v3M13 2l-5.5 5.5M6 3H3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Abrir VOSviewer Online
+          </button>
+          <button class="btn btn-ghost" onclick="downloadMatrix()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><rect x="1.5" y="1.5" width="11" height="11" rx="1" stroke="currentColor" stroke-width="1.2"/><line x1="1.5" y1="5" x2="12.5" y2="5" stroke="currentColor" stroke-width="1.2"/><line x1="5" y1="5" x2="5" y2="12.5" stroke="currentColor" stroke-width="1.2"/></svg>
+            Matriz termo × documento (CSV)
+          </button>
+          <button class="btn btn-ghost" onclick="downloadFreq()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><rect x="1.5" y="1.5" width="11" height="11" rx="1" stroke="currentColor" stroke-width="1.2"/><line x1="1.5" y1="5" x2="12.5" y2="5" stroke="currentColor" stroke-width="1.2"/></svg>
+            Frequências (CSV)
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- HOW -->
+  <section class="sec" id="como" style="border-top:1px solid var(--bd)">
+    <div class="wrap">
+      <p class="sec-title">Como usar</p>
+      <div class="flow">
+        <div class="flow-step"><span class="flow-n">01</span><h3>Carregue os PDFs</h3><p>Arraste ou seleccione um ou mais PDFs. O texto é extraído localmente, sem envio a servidores.</p></div>
+        <div class="flow-step"><span class="flow-n">02</span><h3>Defina os termos</h3><p>Liste suas palavras-chave, agrupe sinônimos com "=", use "*" para variações e "[ ]" para categorias temáticas.</p></div>
+        <div class="flow-step"><span class="flow-n">03</span><h3>Abra no VOSviewer</h3><p>Baixe o JSON gerado e abra no VOSviewer Online. As cores dos nós seguem as suas categorias.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec" id="faq" style="border-top:1px solid var(--bd)">
+    <div class="wrap">
+      <p class="sec-title">Perguntas frequentes</p>
+      <div class="faq-list">
+        <details class="fi"><summary>Qual a diferença para o PDFWords?</summary><p>O PDFWords extrai automaticamente todas as palavras dos PDFs (abordagem aberta, exploratória). O PDFTerms faz o contrário: você controla o vocabulário, listando exactamente os termos de interesse. É a abordagem dirigida, ideal para revisões sistemáticas e para testar conceitos pré-definidos.</p></details>
+        <details class="fi"><summary>Como agrupar sinônimos?</summary><p>Use o sinal de igual. Exemplo: <code>CO2 = carbon dioxide; dióxido de carbono</code>. Todas as variantes são contadas como um único termo, com o rótulo à esquerda do "=". Separe as variantes por ponto-e-vírgula ou vírgula.</p></details>
+        <details class="fi"><summary>Como usar curinga e termos compostos?</summary><p>O <code>*</code> captura variações: <code>emission*</code> casa emission, emissions, emitting. Termos compostos funcionam directamente: <code>shore power</code> procura a expressão inteira. A busca ignora maiúsculas e acentos.</p></details>
+        <details class="fi"><summary>O que é contagem binária por documento?</summary><p>No escopo "Documento", dois termos co-ocorrem se aparecem no mesmo PDF, contando uma vez por documento. Isso evita que um PDF longo, que repete um termo muitas vezes, domine a rede. É o padrão recomendado em bibliometria. No escopo "Frase", a co-ocorrência é contada a cada frase em que os dois termos aparecem juntos.</p></details>
+        <details class="fi"><summary>Como as categorias aparecem no VOSviewer?</summary><p>Cada categoria entre <code>[ ]</code> vira um cluster no JSON, e o VOSviewer atribui uma cor distinta a cada cluster automaticamente. Termos sem categoria ficam num grupo neutro.</p></details>
+        <details class="fi"><summary>Alguns termos não foram encontrados — e agora?</summary><p>O resultado lista os termos com zero ocorrências, para controlo de qualidade. Verifique grafia, acentos, tente um curinga (ex.: <code>govern*</code>) ou adicione sinónimos. PDFs digitalizados (só imagem) precisam de OCR antes.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="logo-tx">PDF<span class="ac">Terms</span></span>
+    <p>Desenvolvido por <strong style="color:var(--tx2)">Darliane Ribeiro Cunha</strong></p>
+    <p>Processamento 100% local &middot; Nenhum dado é armazenado &middot; VOSviewer JSON compatível</p>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div id="modal" class="modal-bg" style="display:none" onclick="closeModal(event)">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <h2 id="modal-title">Abrir no VOSviewer Online</h2>
+    <div class="modal-steps">
+      <div class="mstep"><span class="mstep-n">1</span><p><strong>Baixe o arquivo JSON</strong> clicando em "Baixar JSON para VOSviewer" (se ainda não o fez).</p></div>
+      <div class="mstep"><span class="mstep-n">2</span><p>O VOSviewer Online irá <strong>abrir numa nova aba</strong> agora.</p></div>
+      <div class="mstep"><span class="mstep-n">3</span><p>No VOSviewer, clique em <strong>"Open"</strong> (canto superior direito) → <strong>"VOSviewer JSON file"</strong> → seleccione o arquivo baixado.</p></div>
+    </div>
+    <div class="modal-btns">
+      <a class="btn btn-vos" href="https://app.vosviewer.com" target="_blank" rel="noopener" onclick="closeModalDirect()">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M10 2h3v3M13 2l-5.5 5.5M6 3H3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Abrir VOSviewer Online
+      </a>
+      <button class="btn btn-ghost" onclick="closeModalDirect()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+const CATCOLORS=['#7FB5FF','#5DCAA5','#F0997B','#C9A0FF','#FFD580','#FF8FB1','#6FE0D0','#B5E66F','#FFB36F','#9FB0FF','#A9CDFF','#7FE6A0'];
+let files=[];
+let netData=null;
+let scope='doc';
+
+/* =========================================================================
+   BIBLIOTECA DE TERMOS — Sustentabilidade portuária (PT-BR + EN)
+   Curada a partir de: ESPO/EcoPorts (Top-10 prioridades ambientais),
+   IMO/MARPOL (sulphur cap, EEXI, CII), GRI/CSRD/ESG e ODS/SDG.
+   Estrutura: {label, category, variants[]}  (* = curinga)
+   ========================================================================= */
+const THESAURUS=[
+  // --- Mudanças climáticas / Descarbonização ---
+  {label:'CO2',category:'Mudanças climáticas',variants:['CO2','CO₂','carbon dioxide','dióxido de carbono','gás carbônico','carbon emission*','emissões de carbono']},
+  {label:'GEE',category:'Mudanças climáticas',variants:['GEE','GHG','greenhouse gas*','gases de efeito estufa','gás de efeito estufa']},
+  {label:'Descarbonização',category:'Mudanças climáticas',variants:['descarboniza*','decarboni*','low carbon','baixo carbono']},
+  {label:'Neutralidade de carbono',category:'Mudanças climáticas',variants:['carbon neutral*','net zero','net-zero','neutralidade de carbono','carbono neutro','zero líquido']},
+  {label:'Pegada de carbono',category:'Mudanças climáticas',variants:['carbon footprint','pegada de carbono']},
+  {label:'Escopo de emissões',category:'Mudanças climáticas',variants:['scope 1','scope 2','scope 3','escopo 1','escopo 2','escopo 3']},
+  {label:'Mudança climática',category:'Mudanças climáticas',variants:['climate change','mudança* climática*','aquecimento global','global warming','climate action','ação climática']},
+  // --- Qualidade do ar ---
+  {label:'Qualidade do ar',category:'Qualidade do ar',variants:['air quality','qualidade do ar','poluição do ar','air pollution','poluentes atmosféricos']},
+  {label:'SOx',category:'Qualidade do ar',variants:['SOx','SO2','sulphur oxide*','sulfur oxide*','óxidos de enxofre','óxido de enxofre','enxofre']},
+  {label:'NOx',category:'Qualidade do ar',variants:['NOx','nitrogen oxide*','óxidos de nitrogênio','óxido de nitrogênio']},
+  {label:'Material particulado',category:'Qualidade do ar',variants:['particulate matter','material particulado','PM2.5','PM10','particulate*']},
+  {label:'Sulphur cap',category:'Qualidade do ar',variants:['sulphur cap','sulfur cap','IMO 2020','limite de enxofre']},
+  // --- Eficiência energética / Energia ---
+  {label:'Eficiência energética',category:'Energia',variants:['energy efficiency','eficiência energética','energy saving','economia de energia']},
+  {label:'Shore power',category:'Energia',variants:['shore power','cold ironing','onshore power supply','OPS','energia em terra','fornecimento de energia em terra']},
+  {label:'Energia renovável',category:'Energia',variants:['renewable energy','energia renovável','energias renováveis','solar','wind power','energia eólica','energia solar']},
+  {label:'Eletrificação',category:'Energia',variants:['electrification','eletrificação','electrified','equipamentos elétricos']},
+  {label:'LNG',category:'Energia',variants:['LNG','liquefied natural gas','gás natural liquefeito','GNL']},
+  {label:'Combustíveis alternativos',category:'Energia',variants:['alternative fuel*','combustíveis alternativos','green hydrogen','hidrogênio verde','ammonia','amônia','methanol','metanol','biofuel*','biocombustí*']},
+  {label:'EEXI',category:'Energia',variants:['EEXI','energy efficiency existing ship index']},
+  {label:'CII',category:'Energia',variants:['CII','carbon intensity indicator','indicador de intensidade de carbono']},
+  // --- Água ---
+  {label:'Qualidade da água',category:'Água',variants:['water quality','qualidade da água','poluição da água','water pollution']},
+  {label:'Água de lastro',category:'Água',variants:['ballast water','água de lastro','gestão da água de lastro']},
+  {label:'Efluentes',category:'Água',variants:['effluent*','efluente*','wastewater','águas residuais','esgoto']},
+  {label:'Derramamento de óleo',category:'Água',variants:['oil spill*','derramamento de óleo','vazamento de óleo']},
+  // --- Resíduos / Economia circular ---
+  {label:'Gestão de resíduos',category:'Resíduos',variants:['waste management','gestão de resíduos','garbage','lixo','resíduos sólidos']},
+  {label:'Economia circular',category:'Resíduos',variants:['circular economy','economia circular','reciclagem','recycling','reuse','reaproveitamento']},
+  {label:'Instalações de recepção',category:'Resíduos',variants:['port reception facilit*','instalações de recepção','reception facilit*','resíduos de navios','ship waste']},
+  // --- Dragagem ---
+  {label:'Dragagem',category:'Dragagem',variants:['dredging','dragagem','dredged material','sediment*','sedimento*','disposal']},
+  // --- Ruído ---
+  {label:'Ruído',category:'Ruído',variants:['noise','ruído','poluição sonora','noise pollution','underwater noise','ruído subaquático']},
+  // --- Biodiversidade ---
+  {label:'Biodiversidade',category:'Biodiversidade',variants:['biodiversity','biodiversidade','ecosystem*','ecossistema*','habitat*','marine life','vida marinha','fauna','flora']},
+  // --- Governança / ESG ---
+  {label:'ESG',category:'Governança',variants:['ESG','environmental social governance','ambiental social governança']},
+  {label:'Governança',category:'Governança',variants:['governance','governança','corporate governance','governança corporativa']},
+  {label:'Materialidade',category:'Governança',variants:['materiality','materialidade','material topic*','tema* material*']},
+  {label:'Partes interessadas',category:'Governança',variants:['stakeholder*','partes interessadas','engajamento']},
+  {label:'Transparência',category:'Governança',variants:['transparency','transparência','disclosure','divulgação','accountability','prestação de contas']},
+  {label:'GRI',category:'Governança',variants:['GRI','global reporting initiative']},
+  {label:'CSRD',category:'Governança',variants:['CSRD','corporate sustainability reporting directive']},
+  {label:'Relatório de sustentabilidade',category:'Governança',variants:['sustainability report*','relatório* de sustentabilidade','relatório* socioambiental*']},
+  // --- Social / Comunidade ---
+  {label:'Comunidade local',category:'Social',variants:['local community','comunidade local','community relation*','relação com a comunidade']},
+  {label:'Saúde e segurança',category:'Social',variants:['health and safety','saúde e segurança','occupational safety','segurança do trabalho']},
+  {label:'Trabalho digno',category:'Social',variants:['decent work','trabalho digno','labour','labor','direitos trabalhistas','diversidade','diversity','inclusion','inclusão']},
+  // --- ODS / Agenda 2030 ---
+  {label:'ODS',category:'ODS',variants:['ODS','SDG*','sustainable development goal*','objetivos de desenvolvimento sustentável','agenda 2030']},
+  // --- Regulação / IMO ---
+  {label:'IMO',category:'Regulação',variants:['IMO','international maritime organization','organização marítima internacional']},
+  {label:'MARPOL',category:'Regulação',variants:['MARPOL','convenção marpol']},
+  {label:'Monitoramento de emissões',category:'Regulação',variants:['emission monitoring','monitoramento de emissões','MRV','monitoring reporting verification','AIS','automatic identification system']},
+];
+// índice de busca: forma normalizada -> entrada
+const LIB={};
+THESAURUS.forEach(e=>{e.variants.forEach(v=>{LIB[norm(v).replace(/\*/g,'').trim()]=e})});
+
+/* ---------- utilidades ---------- */
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function norm(s){return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+function showMsg(t){const a=document.getElementById('msg');a.innerHTML=`<p class="err">${esc(t)}</p>`;setTimeout(()=>a.innerHTML='',5000)}
+
+/* ---------- parsing dos termos ---------- */
+function parseTerms(raw){
+  const auto=document.getElementById('auto-expand').checked;
+  const lines=raw.split('\n').map(l=>l.trim()).filter(l=>l && !l.startsWith('//'));
+  const groups=[];
+  lines.forEach(line=>{
+    let category='',rest=line;
+    const m=rest.match(/^\[([^\]]+)\]\s*(.*)$/);
+    if(m){category=m[1].trim();rest=m[2].trim();}
+    if(!rest)return;
+    const eq=rest.indexOf('=');
+    if(eq>=0){
+      // modo manual: usuário definiu os sinônimos
+      const label=rest.slice(0,eq).trim();
+      const variantsStr=rest.slice(eq+1).trim();
+      if(!label)return;
+      let variants=variantsStr?variantsStr.split(/[;,]/).map(v=>v.trim()).filter(Boolean):[];
+      variants.unshift(label);
+      groups.push({label,category,variants:[...new Set(variants)],fromLib:false});
+      return;
+    }
+    // termo simples: tenta expandir pela biblioteca
+    const label=rest;
+    const hit=auto?LIB[norm(label).replace(/\*/g,'').trim()]:null;
+    if(hit){
+      groups.push({label:hit.label,category:category||hit.category,variants:[...hit.variants],fromLib:true});
+    }else{
+      groups.push({label,category,variants:[label],fromLib:false});
+    }
+  });
+  return groups;
+}
+
+function variantRegex(v){
+  let n=norm(v).trim();
+  n=n.replace(/[.+?^${}()|[\]\\]/g,'\\$&'); // escapa especiais, preserva *
+  n=n.replace(/\s+/g,'\\s+');               // espaço flexível (termos compostos)
+  n=n.replace(/\*/g,'[a-z0-9]*');           // curinga
+  return new RegExp('(?<![a-z0-9])'+n+'(?![a-z0-9])','g');
+}
+
+function renderKwPreview(){
+  const groups=parseTerms(document.getElementById('kw-input').value);
+  const cats=[...new Set(groups.map(g=>g.category||'(sem categoria)'))];
+  const catColor={};cats.forEach((c,i)=>catColor[c]=CATCOLORS[i%CATCOLORS.length]);
+  const box=document.getElementById('kw-preview');
+  const cnt=document.getElementById('kw-count');
+  cnt.textContent=groups.length?`${groups.length} termo${groups.length>1?'s':''} · ${cats.length} categoria${cats.length>1?'s':''}`:'';
+  if(!groups.length){box.innerHTML='';return}
+  let html='';
+  cats.forEach(cat=>{
+    const gs=groups.filter(g=>(g.category||'(sem categoria)')===cat);
+    html+=`<div class="kw-cat"><div class="kw-cat-h"><span class="dot" style="background:${catColor[cat]}"></span>${esc(cat)}</div><div class="kw-terms">`;
+    gs.forEach(g=>{
+      const extra=g.variants.length>1?` <span>+${g.variants.length-1}</span>`:'';
+      const mark=g.fromLib?' <span style="color:var(--ac)" title="Expandido pela biblioteca">●</span>':'';
+      html+=`<span class="kw-term" title="${esc(g.variants.join(' | '))}">${esc(g.label)}${extra}${mark}</span>`;
+    });
+    html+='</div></div>';
+  });
+  box.innerHTML=html;
+}
+
+/* ---------- PDFs ---------- */
+function renderFiles(){
+  const l=document.getElementById('files');
+  if(!files.length){l.innerHTML='';return}
+  l.innerHTML=files.map((f,i)=>`<div class="frow"><svg style="color:var(--ac);flex-shrink:0" width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true"><rect x="2" y="1" width="9" height="13" rx="1.5" stroke="currentColor" stroke-width="1.2" fill="none"/><line x1="4.5" y1="5" x2="8.5" y2="5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="4.5" y1="8" x2="8.5" y2="8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="4.5" y1="11" x2="7" y2="11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><span class="fn" title="${esc(f.name)}">${esc(f.name)}</span><span class="fw">${f.done?'ok':f.err?'Erro':'...'}</span><div class="pb"><div class="pbar"><div class="pfill" style="width:${f.p}%"></div></div></div><button class="frm" onclick="rmFile(${i})" title="Remover">&times;</button></div>`).join('')
+}
+function checkGenBtn(){document.getElementById('btn-gen').disabled=!files.some(f=>f.done)}
+function rmFile(i){files.splice(i,1);renderFiles();checkGenBtn();netData=null;document.getElementById('results').style.display='none'}
+function clearAll(){files=[];renderFiles();checkGenBtn();netData=null;document.getElementById('results').style.display='none';document.getElementById('msg').innerHTML=''}
+
+async function processFile(file,idx){
+  try{
+    const ab=await file.arrayBuffer();
+    const pdf=await pdfjsLib.getDocument({data:ab}).promise;
+    let text='';
+    for(let p=1;p<=pdf.numPages;p++){
+      const pg=await pdf.getPage(p);
+      const ct=await pg.getTextContent();
+      text+=ct.items.map(i=>i.str).join(' ')+'\n';
+      files[idx].p=Math.round(p/pdf.numPages*100);renderFiles();
+    }
+    files[idx].text=text;files[idx].done=true;files[idx].p=100;
+    renderFiles();checkGenBtn();
+  }catch(e){files[idx].err=true;files[idx].p=0;renderFiles();showMsg('Erro ao processar "'+file.name+'": '+e.message)}
+}
+function handleFiles(nf){
+  const pdfs=nf.filter(f=>f.type==='application/pdf'||f.name.toLowerCase().endsWith('.pdf'));
+  if(!pdfs.length){showMsg('Apenas arquivos PDF são suportados.');return}
+  pdfs.forEach(file=>{
+    if(files.some(f=>f.name===file.name&&f.size===file.size)){showMsg('"'+file.name+'" já foi adicionado.');return}
+    const idx=files.length;
+    files.push({name:file.name,size:file.size,text:'',p:0,done:false,err:false});
+    renderFiles();processFile(file,idx);
+  });
+}
+
+/* ---------- escopo ---------- */
+function setScope(v){
+  scope=v;
+  document.querySelectorAll('#seg-scope button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+  document.getElementById('scope-hint').textContent = v==='doc'
+    ? 'Termos co-ocorrem se aparecem no mesmo PDF (binário, padrão bibliométrico)'
+    : 'Termos co-ocorrem a cada frase em que aparecem juntos';
+}
+
+/* ---------- construção da rede ---------- */
+function buildNetwork(groups,docs,minOcc,minCooc,scope){
+  groups.forEach(g=>g._re=g.variants.map(variantRegex));
+  const N=groups.length;
+  const normDocs=docs.map(f=>norm(f.text));
+
+  // matriz contagem [doc][grupo]  (ocorrências totais)
+  const matrix=normDocs.map(nt=>groups.map(g=>{
+    let c=0;g._re.forEach(re=>{re.lastIndex=0;const mm=nt.match(re);if(mm)c+=mm.length;});return c;
+  }));
+  const occ=groups.map((g,gi)=>matrix.reduce((s,r)=>s+r[gi],0));
+  const docf=groups.map((g,gi)=>matrix.reduce((s,r)=>s+(r[gi]>0?1:0),0));
+
+  // co-ocorrência
+  const cooc={};
+  const addPair=(i,j)=>{const k=i<j?i+'-'+j:j+'-'+i;cooc[k]=(cooc[k]||0)+1;};
+  if(scope==='doc'){
+    matrix.forEach(row=>{
+      const present=[];for(let g=0;g<N;g++)if(row[g]>0)present.push(g);
+      for(let i=0;i<present.length;i++)for(let j=i+1;j<present.length;j++)addPair(present[i],present[j]);
+    });
+  }else{
+    normDocs.forEach(nt=>{
+      const sents=nt.split(/[.!?\n]+/).filter(s=>s.trim().length>3);
+      sents.forEach(s=>{
+        const present=[];
+        for(let g=0;g<N;g++){let hit=false;groups[g]._re.forEach(re=>{re.lastIndex=0;if(re.test(s))hit=true;});if(hit)present.push(g);}
+        for(let i=0;i<present.length;i++)for(let j=i+1;j<present.length;j++)addPair(present[i],present[j]);
+      });
+    });
+  }
+
+  // categorias -> cluster
+  const cats=[...new Set(groups.map(g=>g.category||'(sem categoria)'))];
+  const catId={};cats.forEach((c,i)=>catId[c]=i+1);
+
+  // itens (filtra por ocorrência mínima); guarda mapa de id real
+  const id={};let next=1;const items=[];
+  groups.forEach((g,gi)=>{
+    if(occ[gi]<minOcc)return;
+    id[gi]=next;
+    const it={id:next,label:g.label,weights:{Occurrences:occ[gi],Documents:docf[gi]}};
+    if(g.category)it.cluster=catId[g.category||'(sem categoria)'];
+    else it.cluster=catId['(sem categoria)'];
+    items.push(it);next++;
+  });
+  const links=Object.entries(cooc).filter(([,v])=>v>=minCooc).map(([k,v])=>{
+    const[a,b]=k.split('-').map(Number);
+    if(id[a]===undefined||id[b]===undefined)return null;
+    return{source_id:id[a],target_id:id[b],strength:v};
+  }).filter(Boolean);
+
+  const notFound=groups.filter((g,gi)=>occ[gi]===0).map(g=>g.label);
+  return{network:{items,links},_meta:{groups,occ,docf,matrix,docs,notFound,catColor:cats.reduce((o,c,i)=>{o[c]=CATCOLORS[i%CATCOLORS.length];return o},{})}};
+}
+
+function generate(){
+  const done=files.filter(f=>f.done);
+  if(!done.length){showMsg('Carregue pelo menos um PDF primeiro.');return}
+  const groups=parseTerms(document.getElementById('kw-input').value);
+  if(!groups.length){showMsg('Defina ao menos um termo de busca.');return}
+  const minOcc=parseInt(document.getElementById('p-minocc').value);
+  const minCooc=parseInt(document.getElementById('p-mincooc').value);
+  netData=buildNetwork(groups,done,minOcc,minCooc,scope);
+  renderResults(netData);
+}
+
+function renderResults(nd){
+  const items=nd.network.items,links=nd.network.links,m=nd._meta;
+  const totalOcc=m.occ.reduce((a,b)=>a+b,0);
+  document.getElementById('sgrid').innerHTML=[
+    ['Termos na rede',items.length,true],
+    ['Ligações',links.length,false],
+    ['Ocorrências totais',totalOcc.toLocaleString('pt-BR'),false],
+    ['Não encontrados',m.notFound.length,false],
+    ['PDFs',m.docs.length,false],
+  ].map(([l,v,h])=>`<div class="sc"><span class="sl">${l}</span><span class="sv${h?' hi':''}">${v}</span></div>`).join('');
+
+  const gByLabel={};m.groups.forEach((g,gi)=>gByLabel[g.label]={cat:g.category||'(sem categoria)',occ:m.occ[gi]});
+  const sorted=[...items].sort((a,b)=>b.weights.Occurrences-a.weights.Occurrences);
+  document.getElementById('net-items').innerHTML=sorted.map(it=>{
+    const cat=gByLabel[it.label]?gByLabel[it.label].cat:'(sem categoria)';
+    const col=m.catColor[cat]||'#64748B';
+    return `<span class="ni"><span class="dot" style="background:${col}"></span>${esc(it.label)} <span class="nc">${it.weights.Occurrences} · ${it.weights.Documents} doc</span></span>`;
+  }).join('');
+
+  const nf=document.getElementById('notfound');
+  nf.innerHTML=m.notFound.length?`<div class="notfound"><div class="nf-t">Termos com zero ocorrências (${m.notFound.length})</div><div class="nf-list">${m.notFound.map(t=>`<span class="nf-i">${esc(t)}</span>`).join('')}</div></div>`:'';
+
+  document.getElementById('results').style.display='block';
+  document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ---------- exports ---------- */
+function downloadBlob(content,name,type){
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click();URL.revokeObjectURL(a.href);
+}
+function downloadJSON(){
+  if(!netData)return;
+  const out={network:netData.network};
+  downloadBlob(JSON.stringify(out,null,2),'vosviewer-terms-network.json','application/json');
+  toast('JSON baixado');
+}
+function csvCell(s){return '"'+String(s).replace(/"/g,'""')+'"'}
+function downloadMatrix(){
+  if(!netData)return;
+  const m=netData._meta;
+  let csv='Termo,Categoria,'+m.docs.map(d=>csvCell(d.name)).join(',')+',Total,Documentos\n';
+  m.groups.forEach((g,gi)=>{
+    const row=m.matrix.map(r=>r[gi]);
+    csv+=csvCell(g.label)+','+csvCell(g.category||'')+','+row.join(',')+','+m.occ[gi]+','+m.docf[gi]+'\n';
+  });
+  downloadBlob(csv,'matriz-termo-documento.csv','text/csv');
+  toast('Matriz exportada');
+}
+function downloadFreq(){
+  if(!netData)return;
+  const m=netData._meta;
+  let csv='Termo,Categoria,Ocorrencias,Documentos\n';
+  m.groups.forEach((g,gi)=>{csv+=csvCell(g.label)+','+csvCell(g.category||'')+','+m.occ[gi]+','+m.docf[gi]+'\n';});
+  downloadBlob(csv,'frequencias-termos.csv','text/csv');
+  toast('Frequências exportadas');
+}
+function openVOS(){
+  if(!netData){showMsg('Gere a rede primeiro.');return}
+  downloadJSON();document.getElementById('modal').style.display='flex';
+}
+function closeModal(e){if(e.target===document.getElementById('modal'))closeModalDirect()}
+function closeModalDirect(){document.getElementById('modal').style.display='none'}
+
+/* ---------- lista de termos: exemplo / salvar / carregar ---------- */
+function loadExample(){
+  document.getElementById('kw-input').value=
+`CO2
+GEE
+qualidade do ar
+SOx
+eficiência energética
+shore power
+energia renovável
+água de lastro
+gestão de resíduos
+dragagem
+ruído
+biodiversidade
+ESG
+materialidade
+ODS`;
+  document.getElementById('auto-expand').checked=true;
+  renderKwPreview();
+}
+function clearKw(){document.getElementById('kw-input').value='';renderKwPreview()}
+function toggleLib(){
+  const b=document.getElementById('lib-browser');
+  if(b.style.display!=='none'){b.style.display='none';return}
+  const cats=[...new Set(THESAURUS.map(e=>e.category))];
+  const catColor={};cats.forEach((c,i)=>catColor[c]=CATCOLORS[i%CATCOLORS.length]);
+  let html='<div class="kw-preview" style="margin-top:1rem">';
+  cats.forEach(cat=>{
+    const es=THESAURUS.filter(e=>e.category===cat);
+    html+=`<div class="kw-cat"><div class="kw-cat-h"><span class="dot" style="background:${catColor[cat]}"></span>${esc(cat)} <span style="color:var(--tx3);font-weight:400">(${es.length})</span></div><div class="kw-terms">`;
+    es.forEach(e=>{html+=`<span class="kw-term" title="${esc(e.variants.join(' | '))}" style="cursor:pointer" onclick="addLibTerm('${esc(e.label).replace(/'/g,"\\'")}')">${esc(e.label)} <span>+${e.variants.length-1}</span></span>`;});
+    html+='</div></div>';
+  });
+  html+=`<p class="param-hint">Biblioteca com ${THESAURUS.length} termos da área. Clique num termo para adicioná-lo à sua lista.</p></div>`;
+  b.innerHTML=html;b.style.display='block';
+}
+function addLibTerm(label){
+  const ta=document.getElementById('kw-input');
+  const lines=ta.value.split('\n').map(l=>l.trim());
+  if(lines.some(l=>norm(l)===norm(label))){toast('Termo já está na lista');return}
+  ta.value=(ta.value.trim()?ta.value.replace(/\s*$/,'')+'\n':'')+label;
+  renderKwPreview();toast('Termo adicionado');
+}
+function downloadKw(){
+  const v=document.getElementById('kw-input').value;
+  if(!v.trim()){showMsg('Nada para salvar.');return}
+  downloadBlob(v,'termos-busca.txt','text/plain');toast('Lista salva');
+}
+
+/* ---------- listeners ---------- */
+document.getElementById('finput').addEventListener('change',function(e){handleFiles(Array.from(e.target.files));this.value=''});
+const dz=document.getElementById('drop');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over')});
+dz.addEventListener('dragleave',e=>{if(!dz.contains(e.relatedTarget))dz.classList.remove('over')});
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');handleFiles(Array.from(e.dataTransfer.files))});
+dz.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();document.getElementById('finput').click()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModalDirect()});
+document.getElementById('kw-input').addEventListener('input',renderKwPreview);
+document.getElementById('auto-expand').addEventListener('change',renderKwPreview);
+document.getElementById('kw-file').addEventListener('change',function(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();r.onload=()=>{document.getElementById('kw-input').value=r.result;renderKwPreview();toast('Lista carregada')};r.readAsText(f);this.value='';
+});
+renderKwPreview();
+</script>
+</body>
+</html>
