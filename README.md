@@ -1,93 +1,95 @@
-# PDFTerms — Busca dirigida de termos para VOSviewer
+# PDFTerms — Controlled-vocabulary term search for VOSviewer
 
-**Ferramenta de busca dirigida por vocabulário controlado: você define os termos, o app conta as ocorrências e co-ocorrências nos PDFs e gera o arquivo JSON para o VOSviewer.**
+**A directed text-mining tool driven by a controlled vocabulary: you define the terms, the app counts their occurrences and co-occurrences across your PDFs and generates a JSON file ready for VOSviewer.**
 
-Complementa o [PDFWords](../textminingprojeto1), que faz a extração aberta de todas as palavras. Aqui a lógica é invertida: o vocabulário é controlado por você, ideal para avaliar relatórios de sustentabilidade e revisões sistemáticas.
+It complements [PDFWords](../textminingprojeto1), which performs open extraction of every word. Here the logic is reversed: the vocabulary is controlled by you, which makes it well suited to evaluating sustainability reports and to systematic reviews.
 
 ---
 
-## Diferença para o PDFWords
+## Difference from PDFWords
 
 | | PDFWords | PDFTerms |
 |---|---|---|
-| Abordagem | Aberta, orientada a dados | Dirigida, orientada a teoria |
-| Quem escolhe os termos | O algoritmo | Você |
-| Uso típico | Exploração inicial | Avaliação de relatórios, revisão sistemática |
+| Approach | Open, data-driven | Directed, theory-driven |
+| Who chooses the terms | The algorithm | You |
+| Typical use | Initial exploration | Report evaluation, systematic review |
 
 ---
 
-## Funcionalidades
+## Features
 
-- Carregamento de múltiplos PDFs por drag & drop (extração 100% local)
-- Você digita um termo por linha; o app expande os sinônimos automaticamente
-- Biblioteca de termos de sustentabilidade portuária embutida (PT-BR + EN)
-- Agrupamento manual de sinônimos com `=` (modo avançado, tem prioridade)
-- Categorias temáticas com `[ ]` que viram clusters coloridos no VOSviewer
-- Busca por termos compostos (ex.: `shore power`) e curinga (`emission*`)
-- Correspondência sem distinção de maiúsculas e acentos
-- Contagem binária por documento ou co-ocorrência por frase
-- Diagnóstico de cobertura: lista os termos com zero ocorrências
-- Exportações: JSON VOSviewer, matriz termo × documento (CSV), frequências (CSV)
-- Salvar e carregar listas de termos (.txt)
-
----
-
-## Biblioteca de termos
-
-Curada a partir de fontes consagradas da área:
-
-- **ESPO / EcoPorts** — Top-10 prioridades ambientais dos portos europeus (clima, qualidade do ar, eficiência energética, água, ruído, dragagem, resíduos, desenvolvimento portuário)
-- **IMO / MARPOL** — sulphur cap, EEXI, CII, monitoramento de emissões
-- **GRI / CSRD / ESG** — materialidade, partes interessadas, transparência, relatório de sustentabilidade
-- **ODS / Agenda 2030**
-
-A biblioteca é extensível: novos termos e sinônimos podem ser adicionados ao objeto `THESAURUS` no `index.html`.
+- Upload of multiple PDFs by drag & drop (text extraction is 100% local)
+- You type one term per line; the app expands the synonyms automatically
+- Built-in maritime and port sustainability term library (Brazilian Portuguese + English)
+- Manual synonym grouping with `=` (advanced mode, takes priority)
+- Thematic categories with `[ ]` that become coloured clusters in VOSviewer
+- Compound-term search (e.g. `shore power`) and wildcards (`emission*`)
+- Case-insensitive and accent-insensitive matching
+- Binary counting per document or co-occurrence per sentence
+- Coverage diagnostics: lists the terms with zero occurrences
+- Exports: VOSviewer JSON, term × document matrix (CSV), frequencies (CSV)
+- Save and load term lists (.txt)
 
 ---
 
-## Como usar
+## Term library
 
-1. Carregue um ou mais PDFs (relatórios de sustentabilidade dos portos)
-2. Digite seus termos de busca, um por linha
-3. Mantenha "Expandir sinônimos automaticamente" ligado para usar a biblioteca
-4. Ajuste o escopo de co-ocorrência e os mínimos
-5. Clique em **Contar termos e gerar rede**
-6. Baixe o JSON e abra em [app.vosviewer.com](https://app.vosviewer.com) → Open → VOSviewer JSON file
+The library was built empirically rather than by guesswork. A corpus of 188 peer-reviewed articles on maritime sustainability, ship emissions and port decarbonisation was processed by text extraction, and the document frequency of each candidate term was measured. The terms that actually occur across the literature were then organised into 17 categories with bilingual synonyms (82 entries, 353 variants).
 
-> PDFs digitalizados (só imagem) precisam de OCR antes do processamento.
+The corpus mining was cross-checked against established frameworks:
+
+- **ESPO / EcoPorts** — top-10 environmental priorities of European ports (climate change, air quality, energy efficiency, water, noise, dredging, waste, port development)
+- **IMO / MARPOL** — EEXI, EEDI, CII, EEOI, emission control areas (ECA/SECA), sulphur cap, MRV
+- **GRI / CSRD / ESG** — materiality, stakeholders, transparency, sustainability reporting
+- **UN SDGs / Agenda 2030**
+
+The `// df` comment next to each entry in `index.html` records how many of the 188 articles contain that term. The library is extensible: new terms and synonyms can be added to the `THESAURUS` object in `index.html`.
 
 ---
 
-## Formato dos termos
+## How to use
+
+1. Upload one or more PDFs (for example, the sustainability reports of the ports under study)
+2. Type your search terms, one per line
+3. Keep "Expand synonyms automatically" enabled to use the library
+4. Adjust the co-occurrence scope and the minimum thresholds
+5. Click **Count terms and generate network**
+6. Download the JSON and open it at [app.vosviewer.com](https://app.vosviewer.com) → Open → VOSviewer JSON file
+
+> Scanned PDFs (image only) require OCR before processing.
+
+---
+
+## Term format
 
 ```
-CO2                              # expande pela biblioteca
-água de lastro                   # termo composto, expande sozinho
-[Energia] hidrogênio = H2; green hydrogen   # manual, com categoria
-govern*                          # curinga
+CO2                              # expands via the library
+ballast water                    # compound term, expands automatically
+[Energy] hydrogen = H2; green hydrogen   # manual, with a category
+govern*                          # wildcard
 ```
 
 ---
 
-## Tecnologias
+## Technologies
 
-| Tecnologia | Uso |
+| Technology | Use |
 |---|---|
-| HTML / CSS / JavaScript | Interface e lógica |
-| PDF.js (v3.11) | Extração de texto dos PDFs |
-| VOSviewer | Visualização da rede |
-| Vercel | Hospedagem |
+| HTML / CSS / JavaScript | Interface and logic |
+| PDF.js (v3.11) | Text extraction from PDFs |
+| VOSviewer | Network visualisation |
+| Vercel | Hosting |
 
 ---
 
-## Privacidade
+## Privacy
 
-Todo o processamento ocorre no navegador. Nenhum arquivo é enviado a servidores.
+All processing happens in the browser. No file is sent to any server.
 
 ---
 
-## Autora
+## Author
 
 **Darliane Ribeiro Cunha, PhD**
-Pesquisadora em governança de sustentabilidade, analytics ambiental e ODS
+Researcher in sustainability governance, environmental analytics and the SDGs
 [ORCID: 0000-0003-2548-1237](https://orcid.org/0000-0003-2548-1237)

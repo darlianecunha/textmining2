@@ -373,51 +373,99 @@ let netData=null;
 let scope='doc';
 
 /* =========================================================================
-   BIBLIOTECA DE TERMOS — Sustentabilidade portuária (PT-BR + EN)
-   Curada a partir de: ESPO/EcoPorts (Top-10 prioridades ambientais),
-   IMO/MARPOL (sulphur cap, EEXI, CII), GRI/CSRD/ESG e ODS/SDG.
+   BIBLIOTECA DE TERMOS — Sustentabilidade marítima e portuária (PT-BR + EN)
+   Fundamentada empiricamente: termos minerados de um corpus de 188 artigos
+   peer-reviewed (frequência por documento), cruzados com ESPO/EcoPorts,
+   IMO/MARPOL (EEXI, CII, EEDI, ECA), GRI/CSRD/ESG e ODS/SDG.
+   O número em // df indica em quantos dos 188 artigos o termo aparece.
    Estrutura: {label, category, variants[]}  (* = curinga)
    ========================================================================= */
 const THESAURUS=[
   // --- Mudanças climáticas / Descarbonização ---
-  {label:'CO2',category:'Mudanças climáticas',variants:['CO2','CO₂','carbon dioxide','dióxido de carbono','gás carbônico','carbon emission*','emissões de carbono']},
-  {label:'GEE',category:'Mudanças climáticas',variants:['GEE','GHG','greenhouse gas*','gases de efeito estufa','gás de efeito estufa']},
-  {label:'Descarbonização',category:'Mudanças climáticas',variants:['descarboniza*','decarboni*','low carbon','baixo carbono']},
-  {label:'Neutralidade de carbono',category:'Mudanças climáticas',variants:['carbon neutral*','net zero','net-zero','neutralidade de carbono','carbono neutro','zero líquido']},
+  {label:'CO2',category:'Mudanças climáticas',variants:['CO2','CO₂','carbon dioxide','dióxido de carbono','gás carbônico','carbon emission*','emissões de carbono']}, // df 172
+  {label:'GEE',category:'Mudanças climáticas',variants:['GEE','GHG','greenhouse gas*','gases de efeito estufa','gás de efeito estufa']}, // df 160
+  {label:'Mudança climática',category:'Mudanças climáticas',variants:['climate change','mudança* climática*','aquecimento global','global warming','climate action','ação climática']}, // df 119
+  {label:'Descarbonização',category:'Mudanças climáticas',variants:['decarboni*','descarboni*','low carbon','baixo carbono']}, // df 111
+  {label:'Metano',category:'Mudanças climáticas',variants:['methane','metano','CH4','methane slip']}, // df 67
+  {label:'Carbono negro',category:'Mudanças climáticas',variants:['black carbon','carbono negro','fuligem']}, // df 28
+  {label:'Neutralidade de carbono',category:'Mudanças climáticas',variants:['carbon neutral*','net zero','net-zero','neutralidade de carbono','carbono neutro']}, // df 26
   {label:'Pegada de carbono',category:'Mudanças climáticas',variants:['carbon footprint','pegada de carbono']},
   {label:'Escopo de emissões',category:'Mudanças climáticas',variants:['scope 1','scope 2','scope 3','escopo 1','escopo 2','escopo 3']},
-  {label:'Mudança climática',category:'Mudanças climáticas',variants:['climate change','mudança* climática*','aquecimento global','global warming','climate action','ação climática']},
-  // --- Qualidade do ar ---
-  {label:'Qualidade do ar',category:'Qualidade do ar',variants:['air quality','qualidade do ar','poluição do ar','air pollution','poluentes atmosféricos']},
-  {label:'SOx',category:'Qualidade do ar',variants:['SOx','SO2','sulphur oxide*','sulfur oxide*','óxidos de enxofre','óxido de enxofre','enxofre']},
-  {label:'NOx',category:'Qualidade do ar',variants:['NOx','nitrogen oxide*','óxidos de nitrogênio','óxido de nitrogênio']},
-  {label:'Material particulado',category:'Qualidade do ar',variants:['particulate matter','material particulado','PM2.5','PM10','particulate*']},
-  {label:'Sulphur cap',category:'Qualidade do ar',variants:['sulphur cap','sulfur cap','IMO 2020','limite de enxofre']},
-  // --- Eficiência energética / Energia ---
-  {label:'Eficiência energética',category:'Energia',variants:['energy efficiency','eficiência energética','energy saving','economia de energia']},
-  {label:'Shore power',category:'Energia',variants:['shore power','cold ironing','onshore power supply','OPS','energia em terra','fornecimento de energia em terra']},
-  {label:'Energia renovável',category:'Energia',variants:['renewable energy','energia renovável','energias renováveis','solar','wind power','energia eólica','energia solar']},
-  {label:'Eletrificação',category:'Energia',variants:['electrification','eletrificação','electrified','equipamentos elétricos']},
-  {label:'LNG',category:'Energia',variants:['LNG','liquefied natural gas','gás natural liquefeito','GNL']},
-  {label:'Combustíveis alternativos',category:'Energia',variants:['alternative fuel*','combustíveis alternativos','green hydrogen','hidrogênio verde','ammonia','amônia','methanol','metanol','biofuel*','biocombustí*']},
-  {label:'EEXI',category:'Energia',variants:['EEXI','energy efficiency existing ship index']},
-  {label:'CII',category:'Energia',variants:['CII','carbon intensity indicator','indicador de intensidade de carbono']},
+  // --- Qualidade do ar / Poluentes ---
+  {label:'Qualidade do ar',category:'Qualidade do ar',variants:['air quality','qualidade do ar','poluição do ar','air pollution','air pollutant*','poluentes atmosféricos']}, // df 83-98
+  {label:'NOx',category:'Qualidade do ar',variants:['NOx','nitrogen oxide*','óxidos de nitrogênio','óxido de nitrogênio']}, // df 113
+  {label:'SOx',category:'Qualidade do ar',variants:['SOx','SO2','sulphur oxide*','sulfur oxide*','óxidos de enxofre','óxido de enxofre']}, // df 89
+  {label:'Material particulado',category:'Qualidade do ar',variants:['particulate matter','material particulado','PM2.5','PM10','particulate*']}, // df 85
+  {label:'Baixo teor de enxofre',category:'Qualidade do ar',variants:['low sulphur','low sulfur','sulphur cap','sulfur cap','IMO 2020','baixo teor de enxofre']}, // df 27
+  // --- Energia e eficiência ---
+  {label:'Eficiência energética',category:'Energia',variants:['energy efficiency','eficiência energética','energy saving','economia de energia']}, // df 117
+  {label:'Consumo de combustível',category:'Energia',variants:['fuel consumption','consumo de combustível','consumo de energia','energy consumption']}, // df 139
+  {label:'Energia renovável',category:'Energia',variants:['renewable energy','energia renovável','energias renováveis','solar','photovoltaic','fotovoltaic*','wind power','energia eólica','energia solar']}, // df 100
+  {label:'Eletrificação',category:'Energia',variants:['electrification','eletrificação','electrified','shore-to-ship']}, // df 57
+  {label:'Transição energética',category:'Energia',variants:['energy transition','transição energética']}, // df 51
+  // --- Combustíveis alternativos ---
+  {label:'Combustíveis alternativos',category:'Combustíveis',variants:['alternative fuel*','combustíveis alternativos','combustível alternativo']}, // df 89
+  {label:'LNG',category:'Combustíveis',variants:['LNG','liquefied natural gas','gás natural liquefeito','GNL','natural gas']}, // df 103
+  {label:'Hidrogênio',category:'Combustíveis',variants:['hydrogen','hidrogênio','green hydrogen','hidrogênio verde']}, // df 88
+  {label:'Amônia',category:'Combustíveis',variants:['ammonia','amônia']}, // df 71
+  {label:'Metanol',category:'Combustíveis',variants:['methanol','metanol']}, // df 67
+  {label:'Biocombustível',category:'Combustíveis',variants:['biofuel*','biocombustí*']}, // df 60
+  {label:'Combustível fóssil',category:'Combustíveis',variants:['fossil fuel*','combustí* fóssil','combustíveis fósseis']}, // df 97
+  {label:'Óleo combustível pesado',category:'Combustíveis',variants:['heavy fuel oil','HFO','óleo combustível pesado','marine gas oil','MGO','marine diesel oil']}, // df 69
+  // --- Tecnologias de redução / propulsão ---
+  {label:'Célula de combustível',category:'Tecnologias',variants:['fuel cell*','célula* de combustível','SOFC','PEM']}, // df 67
+  {label:'Bateria',category:'Tecnologias',variants:['battery','bateria','baterias','energy storage','armazenamento de energia']}, // df 65
+  {label:'Híbrido',category:'Tecnologias',variants:['hybrid','híbrid*','sistema híbrido']}, // df 93
+  {label:'Captura de carbono',category:'Tecnologias',variants:['carbon capture','captura de carbono','CCS','carbon capture and storage']}, // df 44
+  {label:'Lavador de gases',category:'Tecnologias',variants:['scrubber*','exhaust gas cleaning','lavador de gases','sistema de limpeza de gases']}, // df 42
+  {label:'Redução catalítica seletiva',category:'Tecnologias',variants:['selective catalytic reduction','SCR','redução catalítica seletiva']}, // df 19
+  {label:'Propulsão assistida por vento',category:'Tecnologias',variants:['wind-assisted','wind assisted','wind propulsion','rotor sail*','propulsão eólica','propulsão assistida por vento']}, // df 14
+  // --- Operação eficiente ---
+  {label:'Slow steaming',category:'Operações',variants:['slow steaming','speed reduction','speed optimization','redução de velocidade','navegação lenta']}, // df 63
+  {label:'Just-in-time',category:'Operações',variants:['just-in-time','just in time','JIT arrival','chegada just-in-time']}, // df 17
+  {label:'Otimização',category:'Operações',variants:['optimization','optimisation','otimização','weather routing','roteamento']}, // df 113
+  // --- Operações portuárias e navios ---
+  {label:'Porto verde',category:'Operações portuárias',variants:['green port*','porto verde','portos verdes','sustainable port*','porto sustentável']}, // df 58
+  {label:'Operação portuária',category:'Operações portuárias',variants:['port operation*','operação portuária','operações portuárias','port activit*']}, // df 68
+  {label:'Atracação',category:'Operações portuárias',variants:['berth','berthing','at berth','atracação','atracado','hotelling','hotelliing']}, // df 111
+  {label:'Manobra',category:'Operações portuárias',variants:['manoeuvring','maneuvering','manobra','manobras']}, // df 37
+  {label:'Shore power',category:'Operações portuárias',variants:['shore power','cold ironing','onshore power supply','OPS','energia em terra','fornecimento de energia em terra']}, // df 61-65
+  {label:'Terminal de contêineres',category:'Operações portuárias',variants:['container terminal*','container ship*','terminal de contêineres','navio porta-contêineres']}, // df 59-94
+  {label:'Granel sólido',category:'Operações portuárias',variants:['dry bulk','bulk carrier*','granel sólido','graneleiro*']}, // df 45
+  {label:'Navio de cruzeiro',category:'Operações portuárias',variants:['cruise ship*','navio* de cruzeiro','cruzeiro']}, // df 85
+  {label:'Ferry',category:'Operações portuárias',variants:['ferry','ferries','balsa','transporte de passageiros']}, // df 81
+  {label:'Hidrovia',category:'Operações portuárias',variants:['inland waterway*','inland navigation','hidrovia*','navegação interior']}, // df 34
   // --- Água ---
   {label:'Qualidade da água',category:'Água',variants:['water quality','qualidade da água','poluição da água','water pollution']},
   {label:'Água de lastro',category:'Água',variants:['ballast water','água de lastro','gestão da água de lastro']},
   {label:'Efluentes',category:'Água',variants:['effluent*','efluente*','wastewater','águas residuais','esgoto']},
   {label:'Derramamento de óleo',category:'Água',variants:['oil spill*','derramamento de óleo','vazamento de óleo']},
   // --- Resíduos / Economia circular ---
-  {label:'Gestão de resíduos',category:'Resíduos',variants:['waste management','gestão de resíduos','garbage','lixo','resíduos sólidos']},
-  {label:'Economia circular',category:'Resíduos',variants:['circular economy','economia circular','reciclagem','recycling','reuse','reaproveitamento']},
-  {label:'Instalações de recepção',category:'Resíduos',variants:['port reception facilit*','instalações de recepção','reception facilit*','resíduos de navios','ship waste']},
+  {label:'Gestão de resíduos',category:'Resíduos',variants:['waste management','gestão de resíduos','garbage','resíduos sólidos']},
+  {label:'Economia circular',category:'Resíduos',variants:['circular economy','economia circular','reciclagem','recycling','reuse','reaproveitamento']}, // df 20
+  {label:'Instalações de recepção',category:'Resíduos',variants:['port reception facilit*','instalações de recepção','reception facilit*','ship waste','resíduos de navios']},
   // --- Dragagem ---
-  {label:'Dragagem',category:'Dragagem',variants:['dredging','dragagem','dredged material','sediment*','sedimento*','disposal']},
+  {label:'Dragagem',category:'Dragagem',variants:['dredging','dragagem','dredged material','sediment*','sedimento*']},
   // --- Ruído ---
   {label:'Ruído',category:'Ruído',variants:['noise','ruído','poluição sonora','noise pollution','underwater noise','ruído subaquático']},
   // --- Biodiversidade ---
-  {label:'Biodiversidade',category:'Biodiversidade',variants:['biodiversity','biodiversidade','ecosystem*','ecossistema*','habitat*','marine life','vida marinha','fauna','flora']},
+  {label:'Biodiversidade',category:'Biodiversidade',variants:['biodiversity','biodiversidade','ecosystem*','ecossistema*','habitat*','marine life','vida marinha']},
+  // --- Monitoramento e análise de dados ---
+  {label:'Inventário de emissões',category:'Monitoramento',variants:['emission inventor*','inventário de emissões','inventário de emissão','bottom-up','top-down']}, // df 96
+  {label:'AIS',category:'Monitoramento',variants:['AIS','automatic identification system','sistema de identificação automática']}, // df 71
+  {label:'MRV',category:'Monitoramento',variants:['MRV','monitoring reporting verification','monitoramento relato verificação']}, // df 28
+  {label:'Avaliação de ciclo de vida',category:'Monitoramento',variants:['life cycle assessment','LCA','avaliação de ciclo de vida','well-to-wake','tank-to-wake','well to wake']}, // df 34
+  {label:'Aprendizado de máquina',category:'Monitoramento',variants:['machine learning','deep learning','aprendizado de máquina','digital twin','gêmeo digital','big data','inteligência artificial','artificial intelligence']}, // df 33
+  // --- Regulação e métricas (IMO) ---
+  {label:'IMO',category:'Regulação',variants:['IMO','international maritime organization','organização marítima internacional']}, // df 161
+  {label:'MARPOL',category:'Regulação',variants:['MARPOL','convenção marpol']}, // df 91
+  {label:'ECA',category:'Regulação',variants:['emission control area*','ECA','SECA','área de controle de emissões','zona de controle de emissões']}, // df 79
+  {label:'CII',category:'Regulação',variants:['CII','carbon intensity indicator','indicador de intensidade de carbono']}, // df 40
+  {label:'EEDI',category:'Regulação',variants:['EEDI','energy efficiency design index']}, // df 42
+  {label:'EEXI',category:'Regulação',variants:['EEXI','energy efficiency existing ship index']}, // df 29
+  {label:'EEOI',category:'Regulação',variants:['EEOI','energy efficiency operational indicator']}, // df 13
   // --- Governança / ESG ---
+  {label:'Sustentabilidade',category:'Governança',variants:['sustainability','sustentabilidade','sustainable','sustentável']}, // df 135
   {label:'ESG',category:'Governança',variants:['ESG','environmental social governance','ambiental social governança']},
   {label:'Governança',category:'Governança',variants:['governance','governança','corporate governance','governança corporativa']},
   {label:'Materialidade',category:'Governança',variants:['materiality','materialidade','material topic*','tema* material*']},
@@ -429,13 +477,9 @@ const THESAURUS=[
   // --- Social / Comunidade ---
   {label:'Comunidade local',category:'Social',variants:['local community','comunidade local','community relation*','relação com a comunidade']},
   {label:'Saúde e segurança',category:'Social',variants:['health and safety','saúde e segurança','occupational safety','segurança do trabalho']},
-  {label:'Trabalho digno',category:'Social',variants:['decent work','trabalho digno','labour','labor','direitos trabalhistas','diversidade','diversity','inclusion','inclusão']},
+  {label:'Trabalho digno',category:'Social',variants:['decent work','trabalho digno','labour','direitos trabalhistas','diversidade','diversity','inclusion','inclusão']},
   // --- ODS / Agenda 2030 ---
-  {label:'ODS',category:'ODS',variants:['ODS','SDG*','sustainable development goal*','objetivos de desenvolvimento sustentável','agenda 2030']},
-  // --- Regulação / IMO ---
-  {label:'IMO',category:'Regulação',variants:['IMO','international maritime organization','organização marítima internacional']},
-  {label:'MARPOL',category:'Regulação',variants:['MARPOL','convenção marpol']},
-  {label:'Monitoramento de emissões',category:'Regulação',variants:['emission monitoring','monitoramento de emissões','MRV','monitoring reporting verification','AIS','automatic identification system']},
+  {label:'ODS',category:'ODS',variants:['ODS','SDG*','sustainable development goal*','objetivos de desenvolvimento sustentável','desenvolvimento sustentável','sustainable development','agenda 2030']}, // df 73
 ];
 // índice de busca: forma normalizada -> entrada
 const LIB={};
