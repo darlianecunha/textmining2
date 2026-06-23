@@ -237,16 +237,21 @@ footer p{font-size:12px;color:var(--tx3);margin-top:.3rem}
           </div>
         </div>
         <div class="kw-actions">
+          <button class="btn-mini" onclick="document.getElementById('lib-file').click()" style="border-color:var(--ac);color:var(--ac)">Load library (domain pack)</button>
+          <input type="file" id="lib-file" accept=".txt" style="display:none"/>
+          <span id="lib-status" style="font-family:var(--mo);font-size:11px;color:var(--tx3)">No library loaded — terms searched literally</span>
+        </div>
+        <div class="kw-actions">
           <button class="btn-mini" onclick="loadExample()">Load example</button>
           <button class="btn-mini" onclick="toggleLib()">Browse library</button>
           <button class="btn-mini" onclick="exportThesaurus()">Export thesaurus (CSV)</button>
           <button class="btn-mini" onclick="clearKw()">Clear</button>
-          <button class="btn-mini" onclick="downloadKw()">Save (.txt)</button>
-          <button class="btn-mini" onclick="document.getElementById('kw-file').click()">Load (.txt)</button>
+          <button class="btn-mini" onclick="downloadKw()">Save terms (.txt)</button>
+          <button class="btn-mini" onclick="document.getElementById('kw-file').click()">Load terms (.txt)</button>
           <input type="file" id="kw-file" accept=".txt" style="display:none"/>
           <span id="kw-count" style="font-family:var(--mo);font-size:11px;color:var(--tx3);margin-left:auto"></span>
         </div>
-        <p class="param-hint" style="margin-top:.5rem">Advanced: in area A you can group synonyms manually with <code style="font-family:var(--mo);color:var(--ac)">=</code>, set a category in <code style="font-family:var(--mo);color:var(--ac)">[ ]</code> and use a wildcard with <code style="font-family:var(--mo);color:var(--ac)">*</code>. Manual lines take priority over the library.</p>
+        <p class="param-hint" style="margin-top:.5rem">The app is subject-neutral. Load a domain pack (a .txt library for your topic) so that bare terms expand to their variants; the same .txt format works as both a term list and a library. In area A you can also group synonyms manually with <code style="font-family:var(--mo);color:var(--ac)">=</code>, set a category in <code style="font-family:var(--mo);color:var(--ac)">[ ]</code> and use a wildcard with <code style="font-family:var(--mo);color:var(--ac)">*</code>. Manual lines always take priority over the library.</p>
         <div id="lib-browser" style="display:none"></div>
       </div>
     </div>
@@ -400,118 +405,42 @@ let netData=null;
 let scope='doc';
 
 /* =========================================================================
-   TERM LIBRARY — Maritime and port sustainability (English labels, EN+PT variants)
-   Empirically grounded: terms mined from a corpus of 188 peer-reviewed
-   articles (document frequency), cross-checked against ESPO/EcoPorts,
-   IMO/MARPOL (EEXI, CII, EEDI, ECA), GRI/CSRD/ESG and the UN SDGs.
-   The // df number indicates in how many of the 188 articles the term occurs.
-   Labels are in British English; variants are kept bilingual (EN + PT) so the
-   search matches both English and Portuguese PDFs. (* = wildcard)
+   TERM LIBRARY (domain pack) — loaded at runtime, not hard-coded.
+   The app ships subject-neutral so it works for any field. A library is a
+   plain-text pack in the same format as the search terms:
+       [Category] Canonical label = variant1; variant2; wildcard*
+   Load a pack with "Load library". Without a pack, typed terms are searched
+   literally; with a pack, bare terms expand to their variants automatically.
    ========================================================================= */
-const THESAURUS=[
-  // --- Climate change / Decarbonisation ---
-  {label:'CO2',category:'Climate change',variants:['CO2','CO₂','carbon dioxide','dióxido de carbono','gás carbônico','carbon emission*','emissões de carbono']}, // df 172
-  {label:'GHG',category:'Climate change',variants:['GHG','GEE','greenhouse gas*','gases de efeito estufa','gás de efeito estufa']}, // df 160
-  {label:'Climate change',category:'Climate change',variants:['climate change','mudança* climática*','aquecimento global','global warming','climate action','ação climática']}, // df 119
-  {label:'Decarbonisation',category:'Climate change',variants:['decarboni*','descarboni*','low carbon','baixo carbono']}, // df 111
-  {label:'Methane',category:'Climate change',variants:['methane','metano','CH4','methane slip']}, // df 67
-  {label:'Black carbon',category:'Climate change',variants:['black carbon','carbono negro','fuligem']}, // df 28
-  {label:'Carbon neutrality',category:'Climate change',variants:['carbon neutral*','net zero','net-zero','neutralidade de carbono','carbono neutro']}, // df 26
-  {label:'Carbon footprint',category:'Climate change',variants:['carbon footprint','pegada de carbono']},
-  {label:'Emission scopes',category:'Climate change',variants:['scope 1','scope 2','scope 3','escopo 1','escopo 2','escopo 3']},
-  // --- Air quality / Pollutants ---
-  {label:'Air quality',category:'Air quality',variants:['air quality','qualidade do ar','poluição do ar','air pollution','air pollutant*','poluentes atmosféricos']}, // df 83-98
-  {label:'NOx',category:'Air quality',variants:['NOx','nitrogen oxide*','óxidos de nitrogênio','óxido de nitrogênio']}, // df 113
-  {label:'SOx',category:'Air quality',variants:['SOx','SO2','sulphur oxide*','sulfur oxide*','óxidos de enxofre','óxido de enxofre']}, // df 89
-  {label:'Particulate matter',category:'Air quality',variants:['particulate matter','material particulado','PM2.5','PM10','particulate*']}, // df 85
-  {label:'Low-sulphur fuel',category:'Air quality',variants:['low sulphur','low sulfur','sulphur cap','sulfur cap','IMO 2020','baixo teor de enxofre']}, // df 27
-  // --- Energy and efficiency ---
-  {label:'Energy efficiency',category:'Energy',variants:['energy efficiency','eficiência energética','energy saving','economia de energia']}, // df 117
-  {label:'Fuel consumption',category:'Energy',variants:['fuel consumption','consumo de combustível','consumo de energia','energy consumption']}, // df 139
-  {label:'Renewable energy',category:'Energy',variants:['renewable energy','energia renovável','energias renováveis','solar','photovoltaic','fotovoltaic*','wind power','energia eólica','energia solar']}, // df 100
-  {label:'Electrification',category:'Energy',variants:['electrification','eletrificação','electrified','shore-to-ship']}, // df 57
-  {label:'Energy transition',category:'Energy',variants:['energy transition','transição energética']}, // df 51
-  // --- Alternative fuels ---
-  {label:'Alternative fuels',category:'Fuels',variants:['alternative fuel*','combustíveis alternativos','combustível alternativo']}, // df 89
-  {label:'LNG',category:'Fuels',variants:['LNG','liquefied natural gas','gás natural liquefeito','GNL','natural gas']}, // df 103
-  {label:'Hydrogen',category:'Fuels',variants:['hydrogen','hidrogênio','green hydrogen','hidrogênio verde']}, // df 88
-  {label:'Ammonia',category:'Fuels',variants:['ammonia','amônia']}, // df 71
-  {label:'Methanol',category:'Fuels',variants:['methanol','metanol']}, // df 67
-  {label:'Biofuel',category:'Fuels',variants:['biofuel*','biocombustí*']}, // df 60
-  {label:'Fossil fuel',category:'Fuels',variants:['fossil fuel*','combustí* fóssil','combustíveis fósseis']}, // df 97
-  {label:'Heavy fuel oil',category:'Fuels',variants:['heavy fuel oil','HFO','óleo combustível pesado','marine gas oil','MGO','marine diesel oil']}, // df 69
-  // --- Abatement / propulsion technologies ---
-  {label:'Fuel cell',category:'Technologies',variants:['fuel cell*','célula* de combustível','SOFC','PEM']}, // df 67
-  {label:'Battery',category:'Technologies',variants:['battery','bateria','baterias','energy storage','armazenamento de energia']}, // df 65
-  {label:'Hybrid',category:'Technologies',variants:['hybrid','híbrid*','sistema híbrido']}, // df 93
-  {label:'Carbon capture',category:'Technologies',variants:['carbon capture','captura de carbono','CCS','carbon capture and storage']}, // df 44
-  {label:'Scrubber',category:'Technologies',variants:['scrubber*','exhaust gas cleaning','lavador de gases','sistema de limpeza de gases']}, // df 42
-  {label:'Selective catalytic reduction',category:'Technologies',variants:['selective catalytic reduction','SCR','redução catalítica seletiva']}, // df 19
-  {label:'Wind-assisted propulsion',category:'Technologies',variants:['wind-assisted','wind assisted','wind propulsion','rotor sail*','propulsão eólica','propulsão assistida por vento']}, // df 14
-  // --- Efficient operation ---
-  {label:'Slow steaming',category:'Operations',variants:['slow steaming','speed reduction','speed optimization','redução de velocidade','navegação lenta']}, // df 63
-  {label:'Just-in-time',category:'Operations',variants:['just-in-time','just in time','JIT arrival','chegada just-in-time']}, // df 17
-  {label:'Optimisation',category:'Operations',variants:['optimization','optimisation','otimização','weather routing','roteamento']}, // df 113
-  // --- Port operations and vessels ---
-  {label:'Green port',category:'Port operations',variants:['green port*','porto verde','portos verdes','sustainable port*','porto sustentável']}, // df 58
-  {label:'Port operations',category:'Port operations',variants:['port operation*','operação portuária','operações portuárias','port activit*']}, // df 68
-  {label:'Berthing',category:'Port operations',variants:['berth','berthing','at berth','atracação','atracado','hotelling','hotelliing']}, // df 111
-  {label:'Manoeuvring',category:'Port operations',variants:['manoeuvring','maneuvering','manobra','manobras']}, // df 37
-  {label:'Shore power',category:'Port operations',variants:['shore power','cold ironing','onshore power supply','OPS','energia em terra','fornecimento de energia em terra']}, // df 61-65
-  {label:'Container terminal',category:'Port operations',variants:['container terminal*','container ship*','terminal de contêineres','navio porta-contêineres']}, // df 59-94
-  {label:'Dry bulk',category:'Port operations',variants:['dry bulk','bulk carrier*','granel sólido','graneleiro*']}, // df 45
-  {label:'Cruise ship',category:'Port operations',variants:['cruise ship*','navio* de cruzeiro','cruzeiro']}, // df 85
-  {label:'Ferry',category:'Port operations',variants:['ferry','ferries','balsa','transporte de passageiros']}, // df 81
-  {label:'Inland waterway',category:'Port operations',variants:['inland waterway*','inland navigation','hidrovia*','navegação interior']}, // df 34
-  // --- Water ---
-  {label:'Water quality',category:'Water',variants:['water quality','qualidade da água','poluição da água','water pollution']},
-  {label:'Ballast water',category:'Water',variants:['ballast water','água de lastro','gestão da água de lastro']},
-  {label:'Effluents',category:'Water',variants:['effluent*','efluente*','wastewater','águas residuais','esgoto']},
-  {label:'Oil spill',category:'Water',variants:['oil spill*','derramamento de óleo','vazamento de óleo']},
-  // --- Waste / Circular economy ---
-  {label:'Waste management',category:'Waste',variants:['waste management','gestão de resíduos','garbage','resíduos sólidos']},
-  {label:'Circular economy',category:'Waste',variants:['circular economy','economia circular','reciclagem','recycling','reuse','reaproveitamento']}, // df 20
-  {label:'Port reception facilities',category:'Waste',variants:['port reception facilit*','instalações de recepção','reception facilit*','ship waste','resíduos de navios']},
-  // --- Dredging ---
-  {label:'Dredging',category:'Dredging',variants:['dredging','dragagem','dredged material','sediment*','sedimento*']},
-  // --- Noise ---
-  {label:'Noise',category:'Noise',variants:['noise','ruído','poluição sonora','noise pollution','underwater noise','ruído subaquático']},
-  // --- Biodiversity ---
-  {label:'Biodiversity',category:'Biodiversity',variants:['biodiversity','biodiversidade','ecosystem*','ecossistema*','habitat*','marine life','vida marinha']},
-  // --- Monitoring and data analytics ---
-  {label:'Emission inventory',category:'Monitoring',variants:['emission inventor*','inventário de emissões','inventário de emissão','bottom-up','top-down']}, // df 96
-  {label:'AIS',category:'Monitoring',variants:['AIS','automatic identification system','sistema de identificação automática']}, // df 71
-  {label:'MRV',category:'Monitoring',variants:['MRV','monitoring reporting verification','monitoramento relato verificação']}, // df 28
-  {label:'Life-cycle assessment',category:'Monitoring',variants:['life cycle assessment','LCA','avaliação de ciclo de vida','well-to-wake','tank-to-wake','well to wake']}, // df 34
-  {label:'Machine learning',category:'Monitoring',variants:['machine learning','deep learning','aprendizado de máquina','digital twin','gêmeo digital','big data','inteligência artificial','artificial intelligence']}, // df 33
-  // --- Regulation and metrics (IMO) ---
-  {label:'IMO',category:'Regulation',variants:['IMO','international maritime organization','organização marítima internacional']}, // df 161
-  {label:'MARPOL',category:'Regulation',variants:['MARPOL','convenção marpol']}, // df 91
-  {label:'ECA',category:'Regulation',variants:['emission control area*','ECA','SECA','área de controle de emissões','zona de controle de emissões']}, // df 79
-  {label:'CII',category:'Regulation',variants:['CII','carbon intensity indicator','indicador de intensidade de carbono']}, // df 40
-  {label:'EEDI',category:'Regulation',variants:['EEDI','energy efficiency design index']}, // df 42
-  {label:'EEXI',category:'Regulation',variants:['EEXI','energy efficiency existing ship index']}, // df 29
-  {label:'EEOI',category:'Regulation',variants:['EEOI','energy efficiency operational indicator']}, // df 13
-  // --- Governance / ESG ---
-  {label:'Sustainability',category:'Governance',variants:['sustainability','sustentabilidade','sustainable','sustentável']}, // df 135
-  {label:'ESG',category:'Governance',variants:['ESG','environmental social governance','ambiental social governança']},
-  {label:'Governance',category:'Governance',variants:['governance','governança','corporate governance','governança corporativa']},
-  {label:'Materiality',category:'Governance',variants:['materiality','materialidade','material topic*','tema* material*']},
-  {label:'Stakeholders',category:'Governance',variants:['stakeholder*','partes interessadas','engajamento']},
-  {label:'Transparency',category:'Governance',variants:['transparency','transparência','disclosure','divulgação','accountability','prestação de contas']},
-  {label:'GRI',category:'Governance',variants:['GRI','global reporting initiative']},
-  {label:'CSRD',category:'Governance',variants:['CSRD','corporate sustainability reporting directive']},
-  {label:'Sustainability report',category:'Governance',variants:['sustainability report*','relatório* de sustentabilidade','relatório* socioambiental*']},
-  // --- Social / Community ---
-  {label:'Local community',category:'Social',variants:['local community','comunidade local','community relation*','relação com a comunidade']},
-  {label:'Health and safety',category:'Social',variants:['health and safety','saúde e segurança','occupational safety','segurança do trabalho']},
-  {label:'Decent work',category:'Social',variants:['decent work','trabalho digno','labour','direitos trabalhistas','diversidade','diversity','inclusion','inclusão']},
-  // --- SDGs / Agenda 2030 ---
-  {label:'SDGs',category:'SDGs',variants:['ODS','SDG*','sustainable development goal*','objetivos de desenvolvimento sustentável','desenvolvimento sustentável','sustainable development','agenda 2030']}, // df 73
-];
-// índice de busca: forma normalizada -> entrada
-const LIB={};
-THESAURUS.forEach(e=>{e.variants.forEach(v=>{LIB[norm(v).replace(/\*/g,'').trim()]=e})});
+let THESAURUS=[];   // active library entries {label, category, variants[]}
+let LIB={};         // lookup: normalised variant -> entry
+let LIB_NAME='';    // name of the loaded pack
+
+function buildLib(){LIB={};THESAURUS.forEach(e=>{e.variants.forEach(v=>{LIB[norm(v).replace(/\*/g,'').trim()]=e})});}
+function parseLibraryText(raw){
+  const out=[];
+  raw.split('\n').map(l=>l.trim()).filter(l=>l && !l.startsWith('//')).forEach(line=>{
+    let cat='',rest=line;
+    const m=rest.match(/^\[([^\]]+)\]\s*(.*)$/);
+    if(m){cat=m[1].trim();rest=m[2].trim();}
+    if(!rest)return;
+    let label,variants=[];
+    const eq=rest.indexOf('=');
+    if(eq>=0){label=rest.slice(0,eq).trim();variants=rest.slice(eq+1).split(/[;,]/).map(v=>v.trim()).filter(Boolean);}
+    else{label=rest;}
+    if(!label)return;
+    variants.unshift(label);
+    out.push({label,category:cat,variants:[...new Set(variants)]});
+  });
+  return out;
+}
+function setLibrary(text,name){THESAURUS=parseLibraryText(text);buildLib();LIB_NAME=name||'';updateLibStatus();renderKwPreview();}
+function updateLibStatus(){
+  const el=document.getElementById('lib-status');if(!el)return;
+  el.textContent=THESAURUS.length?('Library: '+(LIB_NAME?LIB_NAME+' · ':'')+THESAURUS.length+' terms'):'No library loaded — terms searched literally';
+  el.style.color=THESAURUS.length?'var(--ac)':'var(--tx3)';
+}
+
 
 /* ---------- utilidades ---------- */
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
@@ -771,21 +700,9 @@ function closeModalDirect(){document.getElementById('modal').style.display='none
 /* ---------- term list: example / save / load ---------- */
 function loadExample(){
   document.getElementById('kw-input').value=
-`CO2
-GHG
-air quality
-SOx
-energy efficiency
-shore power
-renewable energy
-ballast water
-waste management
-dredging
-noise
-biodiversity
-ESG
-materiality
-SDGs`;
+`[Theme A] term one = synonym; variant*
+[Theme A] term two
+[Theme B] term three = another synonym`;
   document.getElementById('auto-expand').checked=true;
   renderKwPreview();
 }
@@ -793,6 +710,7 @@ function clearKw(){document.getElementById('kw-input').value='';renderKwPreview(
 function toggleLib(){
   const b=document.getElementById('lib-browser');
   if(b.style.display!=='none'){b.style.display='none';return}
+  if(!THESAURUS.length){b.innerHTML='<p class="param-hint" style="margin-top:1rem">No library loaded. Use "Load library (domain pack)" to load a .txt library for your topic, then bare terms will expand to their variants.</p>';b.style.display='block';return}
   const cats=[...new Set(THESAURUS.map(e=>e.category))];
   const catColor={};cats.forEach((c,i)=>catColor[c]=CATCOLORS[i%CATCOLORS.length]);
   let html='<div class="kw-preview" style="margin-top:1rem">';
@@ -830,8 +748,13 @@ document.getElementById('kw-input').addEventListener('input',renderKwPreview);
 document.getElementById('auto-expand').addEventListener('change',renderKwPreview);
 document.getElementById('kw-file').addEventListener('change',function(e){
   const f=e.target.files[0];if(!f)return;
-  const r=new FileReader();r.onload=()=>{document.getElementById('kw-input').value=r.result;renderKwPreview();toast('List loaded')};r.readAsText(f);this.value='';
+  const r=new FileReader();r.onload=()=>{document.getElementById('kw-input').value=r.result;renderKwPreview();toast('Term list loaded')};r.readAsText(f);this.value='';
 });
+document.getElementById('lib-file').addEventListener('change',function(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();r.onload=()=>{setLibrary(r.result,f.name.replace(/\.txt$/i,''));toast('Library loaded: '+THESAURUS.length+' terms')};r.readAsText(f);this.value='';
+});
+updateLibStatus();
 renderKwPreview();
 </script>
 </body>

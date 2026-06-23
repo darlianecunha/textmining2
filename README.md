@@ -1,8 +1,20 @@
 # PDFTerms — Controlled-vocabulary term search for VOSviewer
 
-**A directed text-mining tool driven by a controlled vocabulary: you define the terms, the app counts their occurrences and co-occurrences across your PDFs and generates a JSON file ready for VOSviewer.**
+**A subject-neutral, directed text-mining tool: you define the terms, the app counts their occurrences and co-occurrences across your PDFs and generates a JSON file ready for VOSviewer.**
 
-It complements [PDFWords](../textminingprojeto1), which performs open extraction of every word. Here the logic is reversed: the vocabulary is controlled by you, which makes it well suited to evaluating sustainability reports and to systematic reviews.
+It complements [PDFWords](../textminingprojeto1), which performs open extraction of every word. Here the logic is reversed: the vocabulary is controlled by you, which makes it well suited to evaluating reports and to systematic reviews in any field.
+
+---
+
+## Subject-neutral, with domain packs
+
+The app is not tied to any topic. The term library is loaded at runtime as a **domain pack**, so the same app serves decarbonisation, the SDGs, ESG, or any other subject.
+
+- A domain pack is a plain-text file in the term format: `[Category] Canonical label = variant1; variant2; wildcard*`
+- Load one with **Load library (domain pack)**. Bare terms you type then expand to their variants automatically.
+- Without a pack, terms are searched literally (still fully usable).
+- Build a pack by writing terms in area A and clicking **Save terms (.txt)**; that file can be reloaded later as a library.
+- An example pack for maritime/port decarbonisation, aligned to Fadiga et al. (2024), is included: `decarbonisation-keywords-fadiga.txt`.
 
 ---
 
@@ -18,59 +30,39 @@ It complements [PDFWords](../textminingprojeto1), which performs open extraction
 
 ## Features
 
-- Two clearly separated areas for full methodological transparency: **area A**, where you type the keywords you want, and **area B**, where the app shows the synonyms it generated for each one (your study's thesaurus)
+- Two clearly separated areas: **A**, where you type the keywords you want, and **B**, where the app shows the synonyms it generated for each one (your study's thesaurus)
 - Upload of multiple PDFs by drag & drop (text extraction is 100% local)
-- You type one term per line; the app expands the synonyms automatically
-- Built-in maritime and port sustainability term library (English labels, English + Portuguese variants)
-- Manual synonym grouping with `=` (advanced mode, takes priority)
+- Loadable domain packs (libraries) for any subject; bilingual variants supported (e.g. English + Portuguese)
+- Manual synonym grouping with `=` (always takes priority over the library)
 - Thematic categories with `[ ]` that become coloured clusters in VOSviewer
 - Compound-term search (e.g. `shore power`) and wildcards (`emission*`)
 - Case-insensitive and accent-insensitive matching
 - Binary counting per document or co-occurrence per sentence
 - Coverage diagnostics: lists the terms with zero occurrences
-- Exports: VOSviewer JSON, **thesaurus mapping (CSV)** for the methods section, term × document matrix (CSV), frequencies (CSV)
-- Save and load term lists (.txt)
-
-## Reproducibility for publication
-
-For a Q1 submission, the term-to-synonym mapping must be auditable. Area B always shows, per term, exactly which variants will be counted, and the **Export thesaurus (CSV)** button produces a table (term, category, source library/manual, synonyms) that can be included as supplementary material or in the methods section. Together with the term × document matrix, this makes the whole counting procedure transparent and reproducible.
-
----
-
-## Term library
-
-The library was built empirically rather than by guesswork. A corpus of 188 peer-reviewed articles on maritime sustainability, ship emissions and port decarbonisation was processed by text extraction, and the document frequency of each candidate term was measured. The terms that actually occur across the literature were then organised into 17 categories with bilingual synonyms (82 entries, 353 variants).
-
-The corpus mining was cross-checked against established frameworks:
-
-- **ESPO / EcoPorts** — top-10 environmental priorities of European ports (climate change, air quality, energy efficiency, water, noise, dredging, waste, port development)
-- **IMO / MARPOL** — EEXI, EEDI, CII, EEOI, emission control areas (ECA/SECA), sulphur cap, MRV
-- **GRI / CSRD / ESG** — materiality, stakeholders, transparency, sustainability reporting
-- **UN SDGs / Agenda 2030**
-
-The `// df` comment next to each entry in `index.html` records how many of the 188 articles contain that term. The library is extensible: new terms and synonyms can be added to the `THESAURUS` object in `index.html`.
+- Exports: VOSviewer JSON, thesaurus mapping (CSV), term × document matrix (CSV), frequencies (CSV)
+- Save and load term lists / libraries (.txt)
 
 ---
 
 ## How to use
 
-1. Upload one or more PDFs (for example, the sustainability reports of the ports under study)
-2. Type your search terms, one per line
-3. Keep "Expand synonyms automatically" enabled to use the library
+1. Upload one or more PDFs
+2. (Optional) Load a domain pack for your topic with **Load library**
+3. Type your search terms in area A, one per line; check area B to confirm the synonyms
 4. Adjust the co-occurrence scope and the minimum thresholds
-5. Click **Count terms and generate network**
+5. Click **Count terms and build network**
 6. Download the JSON and open it at [app.vosviewer.com](https://app.vosviewer.com) → Open → VOSviewer JSON file
 
 > Scanned PDFs (image only) require OCR before processing.
 
 ---
 
-## Term format
+## Term and pack format
 
 ```
-CO2                              # expands via the library
-ballast water                    # compound term, expands automatically
-[Energy] hydrogen = H2; green hydrogen   # manual, with a category
+CO2                              # bare term, expands if the loaded pack knows it
+ballast water                    # compound term
+[Energy] hydrogen = H2; green hydrogen   # manual entry with a category
 govern*                          # wildcard
 ```
 
