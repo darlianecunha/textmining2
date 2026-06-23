@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en-GB">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
@@ -121,6 +121,23 @@ footer p{font-size:12px;color:var(--tx3);margin-top:.3rem}
 .kw-terms{display:flex;flex-wrap:wrap;gap:6px}
 .kw-term{font-family:var(--mo);font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--bd);border-radius:99px;color:var(--tx)}
 .kw-term span{color:var(--tx3)}
+.kw-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:680px){.kw-grid{grid-template-columns:1fr}}
+.kw-col{background:var(--bg3);border:1px solid var(--bd);border-radius:var(--r);padding:1rem}
+.kw-col-h{font-size:13px;font-weight:600;color:var(--tx);display:flex;align-items:center;gap:8px}
+.kw-col-n{font-family:var(--mo);font-size:11px;font-weight:500;color:#04223F;background:var(--ac);width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center}
+.kw-col-s{font-size:11px;color:var(--tx3);margin:.35rem 0 .7rem}
+.kw-col textarea{min-height:240px}
+.syn-out{min-height:240px;max-height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:7px}
+.syn-empty{font-size:12px;color:var(--tx3);font-style:italic;padding:.5rem 0}
+.syn-row{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:.6rem .75rem}
+.syn-row-top{display:flex;align-items:center;gap:7px;margin-bottom:.4rem}
+.syn-dot{width:9px;height:9px;border-radius:99px;flex-shrink:0}
+.syn-term{font-size:13px;font-weight:600;color:var(--tx)}
+.syn-cat{font-family:var(--mo);font-size:10px;color:var(--tx3);margin-left:auto;text-transform:uppercase;letter-spacing:.05em}
+.syn-vars{display:flex;flex-wrap:wrap;gap:5px}
+.syn-var{font-family:var(--mo);font-size:10.5px;padding:2px 8px;background:var(--bg3);border:1px solid var(--bd);border-radius:99px;color:var(--tx2)}
+.syn-none{font-size:11px;color:var(--dg);font-style:italic}
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;display:flex;align-items:center;justify-content:center;padding:1.5rem}
 .modal{background:var(--bg2);border:1px solid var(--bdh);border-radius:var(--rl);max-width:480px;width:100%;padding:2rem}
 .modal h2{font-size:18px;font-weight:600;margin-bottom:1.2rem}
@@ -147,9 +164,9 @@ footer p{font-size:12px;color:var(--tx3);margin-top:.3rem}
       <span class="logo-tx">PDF<span class="ac">Terms</span></span>
     </div>
     <nav class="nav">
-      <a href="#termos">Termos</a>
-      <a href="#params">Parâmetros</a>
-      <a href="#como">Como usar</a>
+      <a href="#termos">Terms</a>
+      <a href="#params">Parameters</a>
+      <a href="#como">How to use</a>
       <a href="#faq">FAQ</a>
     </nav>
   </div>
@@ -158,14 +175,14 @@ footer p{font-size:12px;color:var(--tx3);margin-top:.3rem}
 <main>
   <section class="hero">
     <div class="wrap">
-      <p class="hero-lbl">Busca dirigida · Vocabulário controlado</p>
-      <h1 class="hero-h1">Conte seus termos de busca<br>e gere a rede no VOSviewer</h1>
-      <p class="hero-sub">Você define as palavras-chave, o app conta as ocorrências e as co-ocorrências entre os seus PDFs e gera um arquivo JSON pronto para o VOSviewer Online. Com sinônimos agrupados, termos compostos, curinga e categorias temáticas.</p>
+      <p class="hero-lbl">Directed search · Controlled vocabulary</p>
+      <h1 class="hero-h1">Count your search terms<br>and build the VOSviewer network</h1>
+      <p class="hero-sub">You define the keywords; the app counts the occurrences and co-occurrences across your PDFs and generates a JSON file ready for VOSviewer Online. With grouped synonyms, compound terms, wildcards and thematic categories.</p>
       <div class="hero-badges">
         <span class="badge hi">VOSviewer JSON</span>
-        <span class="badge">Vocabulário controlado</span>
-        <span class="badge">Sinônimos + curinga</span>
-        <span class="badge">Contagem binária por documento</span>
+        <span class="badge">Controlled vocabulary</span>
+        <span class="badge">Synonyms + wildcards</span>
+        <span class="badge">Binary count per document</span>
         <span class="badge">100% local</span>
       </div>
     </div>
@@ -174,9 +191,9 @@ footer p{font-size:12px;color:var(--tx3);margin-top:.3rem}
   <!-- UPLOAD -->
   <section class="sec">
     <div class="wrap">
-      <p class="sec-title">1 — Carregar PDFs</p>
-      <div class="drop" id="drop" role="button" tabindex="0" aria-label="Área de upload de PDFs">
-        <input type="file" accept=".pdf" multiple id="finput" aria-label="Seleccionar PDFs"/>
+      <p class="sec-title">1 — Upload PDFs</p>
+      <div class="drop" id="drop" role="button" tabindex="0" aria-label="PDF upload area">
+        <input type="file" accept=".pdf" multiple id="finput" aria-label="Select PDFs"/>
         <div class="drop-in">
           <div class="drop-ico">
             <svg width="38" height="38" viewBox="0 0 38 38" fill="none" aria-hidden="true">
@@ -189,8 +206,8 @@ footer p{font-size:12px;color:var(--tx3);margin-top:.3rem}
               <line x1="24.5" y1="28" x2="31.5" y2="28" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
             </svg>
           </div>
-          <p class="drop-h">Arraste PDFs aqui</p>
-          <p class="drop-s">ou <span class="drop-link">clique para seleccionar</span> — múltiplos arquivos suportados</p>
+          <p class="drop-h">Drag PDFs here</p>
+          <p class="drop-s">or <span class="drop-link">click to select</span> — multiple files supported</p>
         </div>
       </div>
       <div id="msg"></div>
@@ -201,26 +218,36 @@ footer p{font-size:12px;color:var(--tx3);margin-top:.3rem}
   <!-- TERMOS -->
   <section class="sec" id="termos" style="border-top:1px solid var(--bd)">
     <div class="wrap">
-      <p class="sec-title">2 — Termos de busca (vocabulário controlado)</p>
+      <p class="sec-title">2 — Search terms (controlled vocabulary)</p>
       <div class="kw-block">
-        <span class="param-lbl">Digite um termo por linha. O app expande os sinônimos pela biblioteca de sustentabilidade portuária</span>
-        <textarea id="kw-input" spellcheck="false" autocorrect="off" placeholder="CO2&#10;água de lastro&#10;shore power&#10;eficiência energética&#10;ESG&#10;dragagem&#10;ODS"></textarea>
+        <div class="kw-grid">
+          <div class="kw-col">
+            <div class="kw-col-h"><span class="kw-col-n">A</span> Your keywords</div>
+            <p class="kw-col-s">Type one term per line. Just what you want to search for.</p>
+            <textarea id="kw-input" spellcheck="false" autocorrect="off" placeholder="CO2&#10;ballast water&#10;shore power&#10;energy efficiency&#10;ESG&#10;dredging&#10;SDGs"></textarea>
+            <label style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--tx2);cursor:pointer;margin-top:.6rem">
+              <input type="checkbox" id="auto-expand" checked style="accent-color:var(--ac);width:15px;height:15px"/>
+              Generate synonyms automatically from the library
+            </label>
+          </div>
+          <div class="kw-col">
+            <div class="kw-col-h"><span class="kw-col-n">B</span> Synonyms generated by the app</div>
+            <p class="kw-col-s">Each word with the variants that will actually be counted. This is your study's thesaurus.</p>
+            <div class="syn-out" id="kw-preview"></div>
+          </div>
+        </div>
         <div class="kw-actions">
-          <label style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--tx2);cursor:pointer">
-            <input type="checkbox" id="auto-expand" checked style="accent-color:var(--ac);width:15px;height:15px"/>
-            Expandir sinônimos automaticamente
-          </label>
-          <button class="btn-mini" onclick="loadExample()">Carregar exemplo</button>
-          <button class="btn-mini" onclick="toggleLib()">Ver biblioteca</button>
-          <button class="btn-mini" onclick="clearKw()">Limpar</button>
-          <button class="btn-mini" onclick="downloadKw()">Salvar (.txt)</button>
-          <button class="btn-mini" onclick="document.getElementById('kw-file').click()">Carregar (.txt)</button>
+          <button class="btn-mini" onclick="loadExample()">Load example</button>
+          <button class="btn-mini" onclick="toggleLib()">Browse library</button>
+          <button class="btn-mini" onclick="exportThesaurus()">Export thesaurus (CSV)</button>
+          <button class="btn-mini" onclick="clearKw()">Clear</button>
+          <button class="btn-mini" onclick="downloadKw()">Save (.txt)</button>
+          <button class="btn-mini" onclick="document.getElementById('kw-file').click()">Load (.txt)</button>
           <input type="file" id="kw-file" accept=".txt" style="display:none"/>
           <span id="kw-count" style="font-family:var(--mo);font-size:11px;color:var(--tx3);margin-left:auto"></span>
         </div>
-        <p class="param-hint" style="margin-top:.5rem">Avançado: agrupe sinônimos manualmente com <code style="font-family:var(--mo);color:var(--ac)">=</code>, defina categoria entre <code style="font-family:var(--mo);color:var(--ac)">[ ]</code> e use curinga com <code style="font-family:var(--mo);color:var(--ac)">*</code>. Linhas manuais têm prioridade sobre a biblioteca.</p>
+        <p class="param-hint" style="margin-top:.5rem">Advanced: in area A you can group synonyms manually with <code style="font-family:var(--mo);color:var(--ac)">=</code>, set a category in <code style="font-family:var(--mo);color:var(--ac)">[ ]</code> and use a wildcard with <code style="font-family:var(--mo);color:var(--ac)">*</code>. Manual lines take priority over the library.</p>
         <div id="lib-browser" style="display:none"></div>
-        <div class="kw-preview" id="kw-preview"></div>
       </div>
     </div>
   </section>
@@ -228,42 +255,42 @@ footer p{font-size:12px;color:var(--tx3);margin-top:.3rem}
   <!-- PARAMS -->
   <section class="sec" id="params">
     <div class="wrap">
-      <p class="sec-title">3 — Parâmetros da rede</p>
+      <p class="sec-title">3 — Network parameters</p>
       <div class="params-grid">
         <div class="param-card">
-          <span class="param-lbl">Escopo da co-ocorrência</span>
+          <span class="param-lbl">Co-occurrence scope</span>
           <div class="seg" id="seg-scope">
-            <button class="on" data-v="doc" onclick="setScope('doc')">Documento</button>
-            <button data-v="sent" onclick="setScope('sent')">Frase</button>
+            <button class="on" data-v="doc" onclick="setScope('doc')">Document</button>
+            <button data-v="sent" onclick="setScope('sent')">Sentence</button>
           </div>
-          <p class="param-hint" id="scope-hint">Termos co-ocorrem se aparecem no mesmo PDF (binário, padrão bibliométrico)</p>
+          <p class="param-hint" id="scope-hint">Terms co-occur if they appear in the same PDF (binary, the bibliometric standard)</p>
         </div>
         <div class="param-card">
-          <span class="param-lbl">Ocorrência mínima</span>
+          <span class="param-lbl">Minimum occurrence</span>
           <div class="param-row">
             <input type="range" min="1" max="20" value="1" id="p-minocc" step="1" oninput="document.getElementById('v-minocc').textContent=this.value"/>
             <span class="param-val" id="v-minocc">1</span>
           </div>
-          <p class="param-hint">Mínimo para um termo entrar na rede</p>
+          <p class="param-hint">Minimum for a term to enter the network</p>
         </div>
         <div class="param-card">
-          <span class="param-lbl">Co-ocorrência mínima</span>
+          <span class="param-lbl">Minimum co-occurrence</span>
           <div class="param-row">
             <input type="range" min="1" max="15" value="1" id="p-mincooc" step="1" oninput="document.getElementById('v-mincooc').textContent=this.value"/>
             <span class="param-val" id="v-mincooc">1</span>
           </div>
-          <p class="param-hint">Força mínima de ligação entre dois termos</p>
+          <p class="param-hint">Minimum link strength between two terms</p>
         </div>
       </div>
 
       <div class="actions">
         <button class="btn btn-primary" id="btn-gen" onclick="generate()" disabled>
           <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="6.5" cy="6.5" r="4.2" stroke="currentColor" stroke-width="1.3"/><line x1="9.6" y1="9.6" x2="13" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-          Contar termos e gerar rede
+          Count terms and build network
         </button>
         <button class="btn btn-ghost" id="btn-clear" onclick="clearAll()">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 4h10M5 4V2h4v2M4.5 4l.5 8h4l.5-8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Limpar PDFs
+          Clear PDFs
         </button>
       </div>
     </div>
@@ -274,12 +301,12 @@ footer p{font-size:12px;color:var(--tx3);margin-top:.3rem}
     <div class="divider"></div>
     <section class="sec">
       <div class="wrap">
-        <p class="sec-title">4 — Resultado</p>
+        <p class="sec-title">4 — Result</p>
 
         <div class="stats-grid" id="sgrid"></div>
 
         <div class="net-preview">
-          <p class="net-title">Termos na rede (por ocorrência)</p>
+          <p class="net-title">Terms in the network (by occurrence)</p>
           <div class="net-items" id="net-items"></div>
           <div id="notfound"></div>
         </div>
@@ -287,19 +314,19 @@ footer p{font-size:12px;color:var(--tx3);margin-top:.3rem}
         <div class="actions" style="margin-top:1.5rem">
           <button class="btn btn-primary" onclick="downloadJSON()">
             <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M7.5 2v8M4 7.5L7.5 11 11 7.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12h11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-            Baixar JSON para VOSviewer
+            Download VOSviewer JSON
           </button>
           <button class="btn btn-vos" onclick="openVOS()">
             <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M10 2h3v3M13 2l-5.5 5.5M6 3H3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Abrir VOSviewer Online
+            Open VOSviewer Online
           </button>
           <button class="btn btn-ghost" onclick="downloadMatrix()">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><rect x="1.5" y="1.5" width="11" height="11" rx="1" stroke="currentColor" stroke-width="1.2"/><line x1="1.5" y1="5" x2="12.5" y2="5" stroke="currentColor" stroke-width="1.2"/><line x1="5" y1="5" x2="5" y2="12.5" stroke="currentColor" stroke-width="1.2"/></svg>
-            Matriz termo × documento (CSV)
+            Term × document matrix (CSV)
           </button>
           <button class="btn btn-ghost" onclick="downloadFreq()">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><rect x="1.5" y="1.5" width="11" height="11" rx="1" stroke="currentColor" stroke-width="1.2"/><line x1="1.5" y1="5" x2="12.5" y2="5" stroke="currentColor" stroke-width="1.2"/></svg>
-            Frequências (CSV)
+            Frequencies (CSV)
           </button>
         </div>
       </div>
@@ -309,11 +336,11 @@ footer p{font-size:12px;color:var(--tx3);margin-top:.3rem}
   <!-- HOW -->
   <section class="sec" id="como" style="border-top:1px solid var(--bd)">
     <div class="wrap">
-      <p class="sec-title">Como usar</p>
+      <p class="sec-title">How to use</p>
       <div class="flow">
-        <div class="flow-step"><span class="flow-n">01</span><h3>Carregue os PDFs</h3><p>Arraste ou seleccione um ou mais PDFs. O texto é extraído localmente, sem envio a servidores.</p></div>
-        <div class="flow-step"><span class="flow-n">02</span><h3>Defina os termos</h3><p>Liste suas palavras-chave, agrupe sinônimos com "=", use "*" para variações e "[ ]" para categorias temáticas.</p></div>
-        <div class="flow-step"><span class="flow-n">03</span><h3>Abra no VOSviewer</h3><p>Baixe o JSON gerado e abra no VOSviewer Online. As cores dos nós seguem as suas categorias.</p></div>
+        <div class="flow-step"><span class="flow-n">01</span><h3>Upload the PDFs</h3><p>Drag or select one or more PDFs. The text is extracted locally, with nothing sent to a server.</p></div>
+        <div class="flow-step"><span class="flow-n">02</span><h3>Define the terms</h3><p>List your keywords, group synonyms with "=", use "*" for variations and "[ ]" for thematic categories.</p></div>
+        <div class="flow-step"><span class="flow-n">03</span><h3>Open in VOSviewer</h3><p>Download the generated JSON and open it in VOSviewer Online. Node colours follow your categories.</p></div>
       </div>
     </div>
   </section>
@@ -321,14 +348,14 @@ footer p{font-size:12px;color:var(--tx3);margin-top:.3rem}
   <!-- FAQ -->
   <section class="sec" id="faq" style="border-top:1px solid var(--bd)">
     <div class="wrap">
-      <p class="sec-title">Perguntas frequentes</p>
+      <p class="sec-title">Frequently asked questions</p>
       <div class="faq-list">
-        <details class="fi"><summary>Qual a diferença para o PDFWords?</summary><p>O PDFWords extrai automaticamente todas as palavras dos PDFs (abordagem aberta, exploratória). O PDFTerms faz o contrário: você controla o vocabulário, listando exactamente os termos de interesse. É a abordagem dirigida, ideal para revisões sistemáticas e para testar conceitos pré-definidos.</p></details>
-        <details class="fi"><summary>Como agrupar sinônimos?</summary><p>Use o sinal de igual. Exemplo: <code>CO2 = carbon dioxide; dióxido de carbono</code>. Todas as variantes são contadas como um único termo, com o rótulo à esquerda do "=". Separe as variantes por ponto-e-vírgula ou vírgula.</p></details>
-        <details class="fi"><summary>Como usar curinga e termos compostos?</summary><p>O <code>*</code> captura variações: <code>emission*</code> casa emission, emissions, emitting. Termos compostos funcionam directamente: <code>shore power</code> procura a expressão inteira. A busca ignora maiúsculas e acentos.</p></details>
-        <details class="fi"><summary>O que é contagem binária por documento?</summary><p>No escopo "Documento", dois termos co-ocorrem se aparecem no mesmo PDF, contando uma vez por documento. Isso evita que um PDF longo, que repete um termo muitas vezes, domine a rede. É o padrão recomendado em bibliometria. No escopo "Frase", a co-ocorrência é contada a cada frase em que os dois termos aparecem juntos.</p></details>
-        <details class="fi"><summary>Como as categorias aparecem no VOSviewer?</summary><p>Cada categoria entre <code>[ ]</code> vira um cluster no JSON, e o VOSviewer atribui uma cor distinta a cada cluster automaticamente. Termos sem categoria ficam num grupo neutro.</p></details>
-        <details class="fi"><summary>Alguns termos não foram encontrados — e agora?</summary><p>O resultado lista os termos com zero ocorrências, para controlo de qualidade. Verifique grafia, acentos, tente um curinga (ex.: <code>govern*</code>) ou adicione sinónimos. PDFs digitalizados (só imagem) precisam de OCR antes.</p></details>
+        <details class="fi"><summary>How does this differ from PDFWords?</summary><p>PDFWords extracts every word from the PDFs automatically (an open, exploratory approach). PDFTerms does the opposite: you control the vocabulary, listing exactly the terms of interest. This is the directed approach, well suited to systematic reviews and to testing predefined concepts.</p></details>
+        <details class="fi"><summary>How do I group synonyms?</summary><p>Use the equals sign. Example: <code>CO2 = carbon dioxide; dióxido de carbono</code>. All the variants are counted as a single term, with the label to the left of "=". Separate the variants with a semicolon or comma. You can also let the app generate the synonyms automatically from the library.</p></details>
+        <details class="fi"><summary>How do I use wildcards and compound terms?</summary><p>The <code>*</code> captures variations: <code>emission*</code> matches emission, emissions, emitting. Compound terms work directly: <code>shore power</code> searches for the whole phrase. The search ignores case and accents.</p></details>
+        <details class="fi"><summary>What is binary counting per document?</summary><p>In the "Document" scope, two terms co-occur if they appear in the same PDF, counted once per document. This prevents a long PDF that repeats a term many times from dominating the network. It is the recommended bibliometric standard. In the "Sentence" scope, co-occurrence is counted for every sentence in which the two terms appear together.</p></details>
+        <details class="fi"><summary>How do categories appear in VOSviewer?</summary><p>Each category in <code>[ ]</code> becomes a cluster in the JSON, and VOSviewer assigns a distinct colour to each cluster automatically. Terms without a category fall into a neutral group.</p></details>
+        <details class="fi"><summary>Some terms were not found — what now?</summary><p>The result lists the terms with zero occurrences, for quality control. Check the spelling and accents, try a wildcard (e.g. <code>govern*</code>) or add synonyms. Scanned PDFs (image only) require OCR first.</p></details>
       </div>
     </div>
   </section>
@@ -337,26 +364,26 @@ footer p{font-size:12px;color:var(--tx3);margin-top:.3rem}
 <footer>
   <div class="wrap">
     <span class="logo-tx">PDF<span class="ac">Terms</span></span>
-    <p>Desenvolvido por <strong style="color:var(--tx2)">Darliane Ribeiro Cunha</strong></p>
-    <p>Processamento 100% local &middot; Nenhum dado é armazenado &middot; VOSviewer JSON compatível</p>
+    <p>Developed by <strong style="color:var(--tx2)">Darliane Ribeiro Cunha</strong></p>
+    <p>100% local processing &middot; No data is stored &middot; VOSviewer JSON compatible</p>
   </div>
 </footer>
 
 <!-- MODAL -->
 <div id="modal" class="modal-bg" style="display:none" onclick="closeModal(event)">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <h2 id="modal-title">Abrir no VOSviewer Online</h2>
+    <h2 id="modal-title">Open in VOSviewer Online</h2>
     <div class="modal-steps">
-      <div class="mstep"><span class="mstep-n">1</span><p><strong>Baixe o arquivo JSON</strong> clicando em "Baixar JSON para VOSviewer" (se ainda não o fez).</p></div>
-      <div class="mstep"><span class="mstep-n">2</span><p>O VOSviewer Online irá <strong>abrir numa nova aba</strong> agora.</p></div>
-      <div class="mstep"><span class="mstep-n">3</span><p>No VOSviewer, clique em <strong>"Open"</strong> (canto superior direito) → <strong>"VOSviewer JSON file"</strong> → seleccione o arquivo baixado.</p></div>
+      <div class="mstep"><span class="mstep-n">1</span><p><strong>Download the JSON file</strong> by clicking "Download VOSviewer JSON" (if you have not already).</p></div>
+      <div class="mstep"><span class="mstep-n">2</span><p>VOSviewer Online will <strong>open in a new tab</strong> now.</p></div>
+      <div class="mstep"><span class="mstep-n">3</span><p>In VOSviewer, click <strong>"Open"</strong> (top right) → <strong>"VOSviewer JSON file"</strong> → select the downloaded file.</p></div>
     </div>
     <div class="modal-btns">
       <a class="btn btn-vos" href="https://app.vosviewer.com" target="_blank" rel="noopener" onclick="closeModalDirect()">
         <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M10 2h3v3M13 2l-5.5 5.5M6 3H3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Abrir VOSviewer Online
+        Open VOSviewer Online
       </a>
-      <button class="btn btn-ghost" onclick="closeModalDirect()">Fechar</button>
+      <button class="btn btn-ghost" onclick="closeModalDirect()">Close</button>
     </div>
   </div>
 </div>
@@ -373,113 +400,114 @@ let netData=null;
 let scope='doc';
 
 /* =========================================================================
-   BIBLIOTECA DE TERMOS — Sustentabilidade marítima e portuária (PT-BR + EN)
-   Fundamentada empiricamente: termos minerados de um corpus de 188 artigos
-   peer-reviewed (frequência por documento), cruzados com ESPO/EcoPorts,
-   IMO/MARPOL (EEXI, CII, EEDI, ECA), GRI/CSRD/ESG e ODS/SDG.
-   O número em // df indica em quantos dos 188 artigos o termo aparece.
-   Estrutura: {label, category, variants[]}  (* = curinga)
+   TERM LIBRARY — Maritime and port sustainability (English labels, EN+PT variants)
+   Empirically grounded: terms mined from a corpus of 188 peer-reviewed
+   articles (document frequency), cross-checked against ESPO/EcoPorts,
+   IMO/MARPOL (EEXI, CII, EEDI, ECA), GRI/CSRD/ESG and the UN SDGs.
+   The // df number indicates in how many of the 188 articles the term occurs.
+   Labels are in British English; variants are kept bilingual (EN + PT) so the
+   search matches both English and Portuguese PDFs. (* = wildcard)
    ========================================================================= */
 const THESAURUS=[
-  // --- Mudanças climáticas / Descarbonização ---
-  {label:'CO2',category:'Mudanças climáticas',variants:['CO2','CO₂','carbon dioxide','dióxido de carbono','gás carbônico','carbon emission*','emissões de carbono']}, // df 172
-  {label:'GEE',category:'Mudanças climáticas',variants:['GEE','GHG','greenhouse gas*','gases de efeito estufa','gás de efeito estufa']}, // df 160
-  {label:'Mudança climática',category:'Mudanças climáticas',variants:['climate change','mudança* climática*','aquecimento global','global warming','climate action','ação climática']}, // df 119
-  {label:'Descarbonização',category:'Mudanças climáticas',variants:['decarboni*','descarboni*','low carbon','baixo carbono']}, // df 111
-  {label:'Metano',category:'Mudanças climáticas',variants:['methane','metano','CH4','methane slip']}, // df 67
-  {label:'Carbono negro',category:'Mudanças climáticas',variants:['black carbon','carbono negro','fuligem']}, // df 28
-  {label:'Neutralidade de carbono',category:'Mudanças climáticas',variants:['carbon neutral*','net zero','net-zero','neutralidade de carbono','carbono neutro']}, // df 26
-  {label:'Pegada de carbono',category:'Mudanças climáticas',variants:['carbon footprint','pegada de carbono']},
-  {label:'Escopo de emissões',category:'Mudanças climáticas',variants:['scope 1','scope 2','scope 3','escopo 1','escopo 2','escopo 3']},
-  // --- Qualidade do ar / Poluentes ---
-  {label:'Qualidade do ar',category:'Qualidade do ar',variants:['air quality','qualidade do ar','poluição do ar','air pollution','air pollutant*','poluentes atmosféricos']}, // df 83-98
-  {label:'NOx',category:'Qualidade do ar',variants:['NOx','nitrogen oxide*','óxidos de nitrogênio','óxido de nitrogênio']}, // df 113
-  {label:'SOx',category:'Qualidade do ar',variants:['SOx','SO2','sulphur oxide*','sulfur oxide*','óxidos de enxofre','óxido de enxofre']}, // df 89
-  {label:'Material particulado',category:'Qualidade do ar',variants:['particulate matter','material particulado','PM2.5','PM10','particulate*']}, // df 85
-  {label:'Baixo teor de enxofre',category:'Qualidade do ar',variants:['low sulphur','low sulfur','sulphur cap','sulfur cap','IMO 2020','baixo teor de enxofre']}, // df 27
-  // --- Energia e eficiência ---
-  {label:'Eficiência energética',category:'Energia',variants:['energy efficiency','eficiência energética','energy saving','economia de energia']}, // df 117
-  {label:'Consumo de combustível',category:'Energia',variants:['fuel consumption','consumo de combustível','consumo de energia','energy consumption']}, // df 139
-  {label:'Energia renovável',category:'Energia',variants:['renewable energy','energia renovável','energias renováveis','solar','photovoltaic','fotovoltaic*','wind power','energia eólica','energia solar']}, // df 100
-  {label:'Eletrificação',category:'Energia',variants:['electrification','eletrificação','electrified','shore-to-ship']}, // df 57
-  {label:'Transição energética',category:'Energia',variants:['energy transition','transição energética']}, // df 51
-  // --- Combustíveis alternativos ---
-  {label:'Combustíveis alternativos',category:'Combustíveis',variants:['alternative fuel*','combustíveis alternativos','combustível alternativo']}, // df 89
-  {label:'LNG',category:'Combustíveis',variants:['LNG','liquefied natural gas','gás natural liquefeito','GNL','natural gas']}, // df 103
-  {label:'Hidrogênio',category:'Combustíveis',variants:['hydrogen','hidrogênio','green hydrogen','hidrogênio verde']}, // df 88
-  {label:'Amônia',category:'Combustíveis',variants:['ammonia','amônia']}, // df 71
-  {label:'Metanol',category:'Combustíveis',variants:['methanol','metanol']}, // df 67
-  {label:'Biocombustível',category:'Combustíveis',variants:['biofuel*','biocombustí*']}, // df 60
-  {label:'Combustível fóssil',category:'Combustíveis',variants:['fossil fuel*','combustí* fóssil','combustíveis fósseis']}, // df 97
-  {label:'Óleo combustível pesado',category:'Combustíveis',variants:['heavy fuel oil','HFO','óleo combustível pesado','marine gas oil','MGO','marine diesel oil']}, // df 69
-  // --- Tecnologias de redução / propulsão ---
-  {label:'Célula de combustível',category:'Tecnologias',variants:['fuel cell*','célula* de combustível','SOFC','PEM']}, // df 67
-  {label:'Bateria',category:'Tecnologias',variants:['battery','bateria','baterias','energy storage','armazenamento de energia']}, // df 65
-  {label:'Híbrido',category:'Tecnologias',variants:['hybrid','híbrid*','sistema híbrido']}, // df 93
-  {label:'Captura de carbono',category:'Tecnologias',variants:['carbon capture','captura de carbono','CCS','carbon capture and storage']}, // df 44
-  {label:'Lavador de gases',category:'Tecnologias',variants:['scrubber*','exhaust gas cleaning','lavador de gases','sistema de limpeza de gases']}, // df 42
-  {label:'Redução catalítica seletiva',category:'Tecnologias',variants:['selective catalytic reduction','SCR','redução catalítica seletiva']}, // df 19
-  {label:'Propulsão assistida por vento',category:'Tecnologias',variants:['wind-assisted','wind assisted','wind propulsion','rotor sail*','propulsão eólica','propulsão assistida por vento']}, // df 14
-  // --- Operação eficiente ---
-  {label:'Slow steaming',category:'Operações',variants:['slow steaming','speed reduction','speed optimization','redução de velocidade','navegação lenta']}, // df 63
-  {label:'Just-in-time',category:'Operações',variants:['just-in-time','just in time','JIT arrival','chegada just-in-time']}, // df 17
-  {label:'Otimização',category:'Operações',variants:['optimization','optimisation','otimização','weather routing','roteamento']}, // df 113
-  // --- Operações portuárias e navios ---
-  {label:'Porto verde',category:'Operações portuárias',variants:['green port*','porto verde','portos verdes','sustainable port*','porto sustentável']}, // df 58
-  {label:'Operação portuária',category:'Operações portuárias',variants:['port operation*','operação portuária','operações portuárias','port activit*']}, // df 68
-  {label:'Atracação',category:'Operações portuárias',variants:['berth','berthing','at berth','atracação','atracado','hotelling','hotelliing']}, // df 111
-  {label:'Manobra',category:'Operações portuárias',variants:['manoeuvring','maneuvering','manobra','manobras']}, // df 37
-  {label:'Shore power',category:'Operações portuárias',variants:['shore power','cold ironing','onshore power supply','OPS','energia em terra','fornecimento de energia em terra']}, // df 61-65
-  {label:'Terminal de contêineres',category:'Operações portuárias',variants:['container terminal*','container ship*','terminal de contêineres','navio porta-contêineres']}, // df 59-94
-  {label:'Granel sólido',category:'Operações portuárias',variants:['dry bulk','bulk carrier*','granel sólido','graneleiro*']}, // df 45
-  {label:'Navio de cruzeiro',category:'Operações portuárias',variants:['cruise ship*','navio* de cruzeiro','cruzeiro']}, // df 85
-  {label:'Ferry',category:'Operações portuárias',variants:['ferry','ferries','balsa','transporte de passageiros']}, // df 81
-  {label:'Hidrovia',category:'Operações portuárias',variants:['inland waterway*','inland navigation','hidrovia*','navegação interior']}, // df 34
-  // --- Água ---
-  {label:'Qualidade da água',category:'Água',variants:['water quality','qualidade da água','poluição da água','water pollution']},
-  {label:'Água de lastro',category:'Água',variants:['ballast water','água de lastro','gestão da água de lastro']},
-  {label:'Efluentes',category:'Água',variants:['effluent*','efluente*','wastewater','águas residuais','esgoto']},
-  {label:'Derramamento de óleo',category:'Água',variants:['oil spill*','derramamento de óleo','vazamento de óleo']},
-  // --- Resíduos / Economia circular ---
-  {label:'Gestão de resíduos',category:'Resíduos',variants:['waste management','gestão de resíduos','garbage','resíduos sólidos']},
-  {label:'Economia circular',category:'Resíduos',variants:['circular economy','economia circular','reciclagem','recycling','reuse','reaproveitamento']}, // df 20
-  {label:'Instalações de recepção',category:'Resíduos',variants:['port reception facilit*','instalações de recepção','reception facilit*','ship waste','resíduos de navios']},
-  // --- Dragagem ---
-  {label:'Dragagem',category:'Dragagem',variants:['dredging','dragagem','dredged material','sediment*','sedimento*']},
-  // --- Ruído ---
-  {label:'Ruído',category:'Ruído',variants:['noise','ruído','poluição sonora','noise pollution','underwater noise','ruído subaquático']},
-  // --- Biodiversidade ---
-  {label:'Biodiversidade',category:'Biodiversidade',variants:['biodiversity','biodiversidade','ecosystem*','ecossistema*','habitat*','marine life','vida marinha']},
-  // --- Monitoramento e análise de dados ---
-  {label:'Inventário de emissões',category:'Monitoramento',variants:['emission inventor*','inventário de emissões','inventário de emissão','bottom-up','top-down']}, // df 96
-  {label:'AIS',category:'Monitoramento',variants:['AIS','automatic identification system','sistema de identificação automática']}, // df 71
-  {label:'MRV',category:'Monitoramento',variants:['MRV','monitoring reporting verification','monitoramento relato verificação']}, // df 28
-  {label:'Avaliação de ciclo de vida',category:'Monitoramento',variants:['life cycle assessment','LCA','avaliação de ciclo de vida','well-to-wake','tank-to-wake','well to wake']}, // df 34
-  {label:'Aprendizado de máquina',category:'Monitoramento',variants:['machine learning','deep learning','aprendizado de máquina','digital twin','gêmeo digital','big data','inteligência artificial','artificial intelligence']}, // df 33
-  // --- Regulação e métricas (IMO) ---
-  {label:'IMO',category:'Regulação',variants:['IMO','international maritime organization','organização marítima internacional']}, // df 161
-  {label:'MARPOL',category:'Regulação',variants:['MARPOL','convenção marpol']}, // df 91
-  {label:'ECA',category:'Regulação',variants:['emission control area*','ECA','SECA','área de controle de emissões','zona de controle de emissões']}, // df 79
-  {label:'CII',category:'Regulação',variants:['CII','carbon intensity indicator','indicador de intensidade de carbono']}, // df 40
-  {label:'EEDI',category:'Regulação',variants:['EEDI','energy efficiency design index']}, // df 42
-  {label:'EEXI',category:'Regulação',variants:['EEXI','energy efficiency existing ship index']}, // df 29
-  {label:'EEOI',category:'Regulação',variants:['EEOI','energy efficiency operational indicator']}, // df 13
-  // --- Governança / ESG ---
-  {label:'Sustentabilidade',category:'Governança',variants:['sustainability','sustentabilidade','sustainable','sustentável']}, // df 135
-  {label:'ESG',category:'Governança',variants:['ESG','environmental social governance','ambiental social governança']},
-  {label:'Governança',category:'Governança',variants:['governance','governança','corporate governance','governança corporativa']},
-  {label:'Materialidade',category:'Governança',variants:['materiality','materialidade','material topic*','tema* material*']},
-  {label:'Partes interessadas',category:'Governança',variants:['stakeholder*','partes interessadas','engajamento']},
-  {label:'Transparência',category:'Governança',variants:['transparency','transparência','disclosure','divulgação','accountability','prestação de contas']},
-  {label:'GRI',category:'Governança',variants:['GRI','global reporting initiative']},
-  {label:'CSRD',category:'Governança',variants:['CSRD','corporate sustainability reporting directive']},
-  {label:'Relatório de sustentabilidade',category:'Governança',variants:['sustainability report*','relatório* de sustentabilidade','relatório* socioambiental*']},
-  // --- Social / Comunidade ---
-  {label:'Comunidade local',category:'Social',variants:['local community','comunidade local','community relation*','relação com a comunidade']},
-  {label:'Saúde e segurança',category:'Social',variants:['health and safety','saúde e segurança','occupational safety','segurança do trabalho']},
-  {label:'Trabalho digno',category:'Social',variants:['decent work','trabalho digno','labour','direitos trabalhistas','diversidade','diversity','inclusion','inclusão']},
-  // --- ODS / Agenda 2030 ---
-  {label:'ODS',category:'ODS',variants:['ODS','SDG*','sustainable development goal*','objetivos de desenvolvimento sustentável','desenvolvimento sustentável','sustainable development','agenda 2030']}, // df 73
+  // --- Climate change / Decarbonisation ---
+  {label:'CO2',category:'Climate change',variants:['CO2','CO₂','carbon dioxide','dióxido de carbono','gás carbônico','carbon emission*','emissões de carbono']}, // df 172
+  {label:'GHG',category:'Climate change',variants:['GHG','GEE','greenhouse gas*','gases de efeito estufa','gás de efeito estufa']}, // df 160
+  {label:'Climate change',category:'Climate change',variants:['climate change','mudança* climática*','aquecimento global','global warming','climate action','ação climática']}, // df 119
+  {label:'Decarbonisation',category:'Climate change',variants:['decarboni*','descarboni*','low carbon','baixo carbono']}, // df 111
+  {label:'Methane',category:'Climate change',variants:['methane','metano','CH4','methane slip']}, // df 67
+  {label:'Black carbon',category:'Climate change',variants:['black carbon','carbono negro','fuligem']}, // df 28
+  {label:'Carbon neutrality',category:'Climate change',variants:['carbon neutral*','net zero','net-zero','neutralidade de carbono','carbono neutro']}, // df 26
+  {label:'Carbon footprint',category:'Climate change',variants:['carbon footprint','pegada de carbono']},
+  {label:'Emission scopes',category:'Climate change',variants:['scope 1','scope 2','scope 3','escopo 1','escopo 2','escopo 3']},
+  // --- Air quality / Pollutants ---
+  {label:'Air quality',category:'Air quality',variants:['air quality','qualidade do ar','poluição do ar','air pollution','air pollutant*','poluentes atmosféricos']}, // df 83-98
+  {label:'NOx',category:'Air quality',variants:['NOx','nitrogen oxide*','óxidos de nitrogênio','óxido de nitrogênio']}, // df 113
+  {label:'SOx',category:'Air quality',variants:['SOx','SO2','sulphur oxide*','sulfur oxide*','óxidos de enxofre','óxido de enxofre']}, // df 89
+  {label:'Particulate matter',category:'Air quality',variants:['particulate matter','material particulado','PM2.5','PM10','particulate*']}, // df 85
+  {label:'Low-sulphur fuel',category:'Air quality',variants:['low sulphur','low sulfur','sulphur cap','sulfur cap','IMO 2020','baixo teor de enxofre']}, // df 27
+  // --- Energy and efficiency ---
+  {label:'Energy efficiency',category:'Energy',variants:['energy efficiency','eficiência energética','energy saving','economia de energia']}, // df 117
+  {label:'Fuel consumption',category:'Energy',variants:['fuel consumption','consumo de combustível','consumo de energia','energy consumption']}, // df 139
+  {label:'Renewable energy',category:'Energy',variants:['renewable energy','energia renovável','energias renováveis','solar','photovoltaic','fotovoltaic*','wind power','energia eólica','energia solar']}, // df 100
+  {label:'Electrification',category:'Energy',variants:['electrification','eletrificação','electrified','shore-to-ship']}, // df 57
+  {label:'Energy transition',category:'Energy',variants:['energy transition','transição energética']}, // df 51
+  // --- Alternative fuels ---
+  {label:'Alternative fuels',category:'Fuels',variants:['alternative fuel*','combustíveis alternativos','combustível alternativo']}, // df 89
+  {label:'LNG',category:'Fuels',variants:['LNG','liquefied natural gas','gás natural liquefeito','GNL','natural gas']}, // df 103
+  {label:'Hydrogen',category:'Fuels',variants:['hydrogen','hidrogênio','green hydrogen','hidrogênio verde']}, // df 88
+  {label:'Ammonia',category:'Fuels',variants:['ammonia','amônia']}, // df 71
+  {label:'Methanol',category:'Fuels',variants:['methanol','metanol']}, // df 67
+  {label:'Biofuel',category:'Fuels',variants:['biofuel*','biocombustí*']}, // df 60
+  {label:'Fossil fuel',category:'Fuels',variants:['fossil fuel*','combustí* fóssil','combustíveis fósseis']}, // df 97
+  {label:'Heavy fuel oil',category:'Fuels',variants:['heavy fuel oil','HFO','óleo combustível pesado','marine gas oil','MGO','marine diesel oil']}, // df 69
+  // --- Abatement / propulsion technologies ---
+  {label:'Fuel cell',category:'Technologies',variants:['fuel cell*','célula* de combustível','SOFC','PEM']}, // df 67
+  {label:'Battery',category:'Technologies',variants:['battery','bateria','baterias','energy storage','armazenamento de energia']}, // df 65
+  {label:'Hybrid',category:'Technologies',variants:['hybrid','híbrid*','sistema híbrido']}, // df 93
+  {label:'Carbon capture',category:'Technologies',variants:['carbon capture','captura de carbono','CCS','carbon capture and storage']}, // df 44
+  {label:'Scrubber',category:'Technologies',variants:['scrubber*','exhaust gas cleaning','lavador de gases','sistema de limpeza de gases']}, // df 42
+  {label:'Selective catalytic reduction',category:'Technologies',variants:['selective catalytic reduction','SCR','redução catalítica seletiva']}, // df 19
+  {label:'Wind-assisted propulsion',category:'Technologies',variants:['wind-assisted','wind assisted','wind propulsion','rotor sail*','propulsão eólica','propulsão assistida por vento']}, // df 14
+  // --- Efficient operation ---
+  {label:'Slow steaming',category:'Operations',variants:['slow steaming','speed reduction','speed optimization','redução de velocidade','navegação lenta']}, // df 63
+  {label:'Just-in-time',category:'Operations',variants:['just-in-time','just in time','JIT arrival','chegada just-in-time']}, // df 17
+  {label:'Optimisation',category:'Operations',variants:['optimization','optimisation','otimização','weather routing','roteamento']}, // df 113
+  // --- Port operations and vessels ---
+  {label:'Green port',category:'Port operations',variants:['green port*','porto verde','portos verdes','sustainable port*','porto sustentável']}, // df 58
+  {label:'Port operations',category:'Port operations',variants:['port operation*','operação portuária','operações portuárias','port activit*']}, // df 68
+  {label:'Berthing',category:'Port operations',variants:['berth','berthing','at berth','atracação','atracado','hotelling','hotelliing']}, // df 111
+  {label:'Manoeuvring',category:'Port operations',variants:['manoeuvring','maneuvering','manobra','manobras']}, // df 37
+  {label:'Shore power',category:'Port operations',variants:['shore power','cold ironing','onshore power supply','OPS','energia em terra','fornecimento de energia em terra']}, // df 61-65
+  {label:'Container terminal',category:'Port operations',variants:['container terminal*','container ship*','terminal de contêineres','navio porta-contêineres']}, // df 59-94
+  {label:'Dry bulk',category:'Port operations',variants:['dry bulk','bulk carrier*','granel sólido','graneleiro*']}, // df 45
+  {label:'Cruise ship',category:'Port operations',variants:['cruise ship*','navio* de cruzeiro','cruzeiro']}, // df 85
+  {label:'Ferry',category:'Port operations',variants:['ferry','ferries','balsa','transporte de passageiros']}, // df 81
+  {label:'Inland waterway',category:'Port operations',variants:['inland waterway*','inland navigation','hidrovia*','navegação interior']}, // df 34
+  // --- Water ---
+  {label:'Water quality',category:'Water',variants:['water quality','qualidade da água','poluição da água','water pollution']},
+  {label:'Ballast water',category:'Water',variants:['ballast water','água de lastro','gestão da água de lastro']},
+  {label:'Effluents',category:'Water',variants:['effluent*','efluente*','wastewater','águas residuais','esgoto']},
+  {label:'Oil spill',category:'Water',variants:['oil spill*','derramamento de óleo','vazamento de óleo']},
+  // --- Waste / Circular economy ---
+  {label:'Waste management',category:'Waste',variants:['waste management','gestão de resíduos','garbage','resíduos sólidos']},
+  {label:'Circular economy',category:'Waste',variants:['circular economy','economia circular','reciclagem','recycling','reuse','reaproveitamento']}, // df 20
+  {label:'Port reception facilities',category:'Waste',variants:['port reception facilit*','instalações de recepção','reception facilit*','ship waste','resíduos de navios']},
+  // --- Dredging ---
+  {label:'Dredging',category:'Dredging',variants:['dredging','dragagem','dredged material','sediment*','sedimento*']},
+  // --- Noise ---
+  {label:'Noise',category:'Noise',variants:['noise','ruído','poluição sonora','noise pollution','underwater noise','ruído subaquático']},
+  // --- Biodiversity ---
+  {label:'Biodiversity',category:'Biodiversity',variants:['biodiversity','biodiversidade','ecosystem*','ecossistema*','habitat*','marine life','vida marinha']},
+  // --- Monitoring and data analytics ---
+  {label:'Emission inventory',category:'Monitoring',variants:['emission inventor*','inventário de emissões','inventário de emissão','bottom-up','top-down']}, // df 96
+  {label:'AIS',category:'Monitoring',variants:['AIS','automatic identification system','sistema de identificação automática']}, // df 71
+  {label:'MRV',category:'Monitoring',variants:['MRV','monitoring reporting verification','monitoramento relato verificação']}, // df 28
+  {label:'Life-cycle assessment',category:'Monitoring',variants:['life cycle assessment','LCA','avaliação de ciclo de vida','well-to-wake','tank-to-wake','well to wake']}, // df 34
+  {label:'Machine learning',category:'Monitoring',variants:['machine learning','deep learning','aprendizado de máquina','digital twin','gêmeo digital','big data','inteligência artificial','artificial intelligence']}, // df 33
+  // --- Regulation and metrics (IMO) ---
+  {label:'IMO',category:'Regulation',variants:['IMO','international maritime organization','organização marítima internacional']}, // df 161
+  {label:'MARPOL',category:'Regulation',variants:['MARPOL','convenção marpol']}, // df 91
+  {label:'ECA',category:'Regulation',variants:['emission control area*','ECA','SECA','área de controle de emissões','zona de controle de emissões']}, // df 79
+  {label:'CII',category:'Regulation',variants:['CII','carbon intensity indicator','indicador de intensidade de carbono']}, // df 40
+  {label:'EEDI',category:'Regulation',variants:['EEDI','energy efficiency design index']}, // df 42
+  {label:'EEXI',category:'Regulation',variants:['EEXI','energy efficiency existing ship index']}, // df 29
+  {label:'EEOI',category:'Regulation',variants:['EEOI','energy efficiency operational indicator']}, // df 13
+  // --- Governance / ESG ---
+  {label:'Sustainability',category:'Governance',variants:['sustainability','sustentabilidade','sustainable','sustentável']}, // df 135
+  {label:'ESG',category:'Governance',variants:['ESG','environmental social governance','ambiental social governança']},
+  {label:'Governance',category:'Governance',variants:['governance','governança','corporate governance','governança corporativa']},
+  {label:'Materiality',category:'Governance',variants:['materiality','materialidade','material topic*','tema* material*']},
+  {label:'Stakeholders',category:'Governance',variants:['stakeholder*','partes interessadas','engajamento']},
+  {label:'Transparency',category:'Governance',variants:['transparency','transparência','disclosure','divulgação','accountability','prestação de contas']},
+  {label:'GRI',category:'Governance',variants:['GRI','global reporting initiative']},
+  {label:'CSRD',category:'Governance',variants:['CSRD','corporate sustainability reporting directive']},
+  {label:'Sustainability report',category:'Governance',variants:['sustainability report*','relatório* de sustentabilidade','relatório* socioambiental*']},
+  // --- Social / Community ---
+  {label:'Local community',category:'Social',variants:['local community','comunidade local','community relation*','relação com a comunidade']},
+  {label:'Health and safety',category:'Social',variants:['health and safety','saúde e segurança','occupational safety','segurança do trabalho']},
+  {label:'Decent work',category:'Social',variants:['decent work','trabalho digno','labour','direitos trabalhistas','diversidade','diversity','inclusion','inclusão']},
+  // --- SDGs / Agenda 2030 ---
+  {label:'SDGs',category:'SDGs',variants:['ODS','SDG*','sustainable development goal*','objetivos de desenvolvimento sustentável','desenvolvimento sustentável','sustainable development','agenda 2030']}, // df 73
 ];
 // índice de busca: forma normalizada -> entrada
 const LIB={};
@@ -534,22 +562,22 @@ function variantRegex(v){
 
 function renderKwPreview(){
   const groups=parseTerms(document.getElementById('kw-input').value);
-  const cats=[...new Set(groups.map(g=>g.category||'(sem categoria)'))];
+  const cats=[...new Set(groups.map(g=>g.category||'(uncategorised)'))];
   const catColor={};cats.forEach((c,i)=>catColor[c]=CATCOLORS[i%CATCOLORS.length]);
   const box=document.getElementById('kw-preview');
   const cnt=document.getElementById('kw-count');
-  cnt.textContent=groups.length?`${groups.length} termo${groups.length>1?'s':''} · ${cats.length} categoria${cats.length>1?'s':''}`:'';
-  if(!groups.length){box.innerHTML='';return}
+  cnt.textContent=groups.length?`${groups.length} term${groups.length>1?'s':''} · ${cats.length} categor${cats.length>1?'ies':'y'}`:'';
+  if(!groups.length){box.innerHTML='<div class="syn-empty">Type your keywords in area A. The synonyms generated for each one will appear here.</div>';return}
+  // uma linha por termo, na ordem em que foi digitado (mapeamento claro entrada -> sinônimos)
   let html='';
-  cats.forEach(cat=>{
-    const gs=groups.filter(g=>(g.category||'(sem categoria)')===cat);
-    html+=`<div class="kw-cat"><div class="kw-cat-h"><span class="dot" style="background:${catColor[cat]}"></span>${esc(cat)}</div><div class="kw-terms">`;
-    gs.forEach(g=>{
-      const extra=g.variants.length>1?` <span>+${g.variants.length-1}</span>`:'';
-      const mark=g.fromLib?' <span style="color:var(--ac)" title="Expandido pela biblioteca">●</span>':'';
-      html+=`<span class="kw-term" title="${esc(g.variants.join(' | '))}">${esc(g.label)}${extra}${mark}</span>`;
-    });
-    html+='</div></div>';
+  groups.forEach(g=>{
+    const cat=g.category||'(uncategorised)';
+    const col=catColor[cat];
+    const others=g.variants.filter(v=>norm(v)!==norm(g.label));
+    const varsHtml=others.length
+      ? `<div class="syn-vars">${others.map(v=>`<span class="syn-var">${esc(v)}</span>`).join('')}</div>`
+      : `<div class="syn-none">no synonyms in the library — only the literal term will be counted</div>`;
+    html+=`<div class="syn-row"><div class="syn-row-top"><span class="syn-dot" style="background:${col}"></span><span class="syn-term">${esc(g.label)}</span><span class="syn-cat">${esc(cat)}${g.fromLib?' · library':' · manual'}</span></div>${varsHtml}</div>`;
   });
   box.innerHTML=html;
 }
@@ -558,7 +586,7 @@ function renderKwPreview(){
 function renderFiles(){
   const l=document.getElementById('files');
   if(!files.length){l.innerHTML='';return}
-  l.innerHTML=files.map((f,i)=>`<div class="frow"><svg style="color:var(--ac);flex-shrink:0" width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true"><rect x="2" y="1" width="9" height="13" rx="1.5" stroke="currentColor" stroke-width="1.2" fill="none"/><line x1="4.5" y1="5" x2="8.5" y2="5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="4.5" y1="8" x2="8.5" y2="8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="4.5" y1="11" x2="7" y2="11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><span class="fn" title="${esc(f.name)}">${esc(f.name)}</span><span class="fw">${f.done?'ok':f.err?'Erro':'...'}</span><div class="pb"><div class="pbar"><div class="pfill" style="width:${f.p}%"></div></div></div><button class="frm" onclick="rmFile(${i})" title="Remover">&times;</button></div>`).join('')
+  l.innerHTML=files.map((f,i)=>`<div class="frow"><svg style="color:var(--ac);flex-shrink:0" width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true"><rect x="2" y="1" width="9" height="13" rx="1.5" stroke="currentColor" stroke-width="1.2" fill="none"/><line x1="4.5" y1="5" x2="8.5" y2="5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="4.5" y1="8" x2="8.5" y2="8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="4.5" y1="11" x2="7" y2="11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><span class="fn" title="${esc(f.name)}">${esc(f.name)}</span><span class="fw">${f.done?'ok':f.err?'Error':'...'}</span><div class="pb"><div class="pbar"><div class="pfill" style="width:${f.p}%"></div></div></div><button class="frm" onclick="rmFile(${i})" title="Remove">&times;</button></div>`).join('')
 }
 function checkGenBtn(){document.getElementById('btn-gen').disabled=!files.some(f=>f.done)}
 function rmFile(i){files.splice(i,1);renderFiles();checkGenBtn();netData=null;document.getElementById('results').style.display='none'}
@@ -577,13 +605,13 @@ async function processFile(file,idx){
     }
     files[idx].text=text;files[idx].done=true;files[idx].p=100;
     renderFiles();checkGenBtn();
-  }catch(e){files[idx].err=true;files[idx].p=0;renderFiles();showMsg('Erro ao processar "'+file.name+'": '+e.message)}
+  }catch(e){files[idx].err=true;files[idx].p=0;renderFiles();showMsg('Error processing "'+file.name+'": '+e.message)}
 }
 function handleFiles(nf){
   const pdfs=nf.filter(f=>f.type==='application/pdf'||f.name.toLowerCase().endsWith('.pdf'));
-  if(!pdfs.length){showMsg('Apenas arquivos PDF são suportados.');return}
+  if(!pdfs.length){showMsg('Only PDF files are supported.');return}
   pdfs.forEach(file=>{
-    if(files.some(f=>f.name===file.name&&f.size===file.size)){showMsg('"'+file.name+'" já foi adicionado.');return}
+    if(files.some(f=>f.name===file.name&&f.size===file.size)){showMsg('"'+file.name+'" has already been added.');return}
     const idx=files.length;
     files.push({name:file.name,size:file.size,text:'',p:0,done:false,err:false});
     renderFiles();processFile(file,idx);
@@ -595,8 +623,8 @@ function setScope(v){
   scope=v;
   document.querySelectorAll('#seg-scope button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
   document.getElementById('scope-hint').textContent = v==='doc'
-    ? 'Termos co-ocorrem se aparecem no mesmo PDF (binário, padrão bibliométrico)'
-    : 'Termos co-ocorrem a cada frase em que aparecem juntos';
+    ? 'Terms co-occur if they appear in the same PDF (binary, the bibliometric standard)'
+    : 'Terms co-occur for every sentence in which they appear together';
 }
 
 /* ---------- construção da rede ---------- */
@@ -632,7 +660,7 @@ function buildNetwork(groups,docs,minOcc,minCooc,scope){
   }
 
   // categorias -> cluster
-  const cats=[...new Set(groups.map(g=>g.category||'(sem categoria)'))];
+  const cats=[...new Set(groups.map(g=>g.category||'(uncategorised)'))];
   const catId={};cats.forEach((c,i)=>catId[c]=i+1);
 
   // itens (filtra por ocorrência mínima); guarda mapa de id real
@@ -641,8 +669,8 @@ function buildNetwork(groups,docs,minOcc,minCooc,scope){
     if(occ[gi]<minOcc)return;
     id[gi]=next;
     const it={id:next,label:g.label,weights:{Occurrences:occ[gi],Documents:docf[gi]}};
-    if(g.category)it.cluster=catId[g.category||'(sem categoria)'];
-    else it.cluster=catId['(sem categoria)'];
+    if(g.category)it.cluster=catId[g.category||'(uncategorised)'];
+    else it.cluster=catId['(uncategorised)'];
     items.push(it);next++;
   });
   const links=Object.entries(cooc).filter(([,v])=>v>=minCooc).map(([k,v])=>{
@@ -657,9 +685,9 @@ function buildNetwork(groups,docs,minOcc,minCooc,scope){
 
 function generate(){
   const done=files.filter(f=>f.done);
-  if(!done.length){showMsg('Carregue pelo menos um PDF primeiro.');return}
+  if(!done.length){showMsg('Upload at least one PDF first.');return}
   const groups=parseTerms(document.getElementById('kw-input').value);
-  if(!groups.length){showMsg('Defina ao menos um termo de busca.');return}
+  if(!groups.length){showMsg('Enter at least one search term.');return}
   const minOcc=parseInt(document.getElementById('p-minocc').value);
   const minCooc=parseInt(document.getElementById('p-mincooc').value);
   netData=buildNetwork(groups,done,minOcc,minCooc,scope);
@@ -670,23 +698,23 @@ function renderResults(nd){
   const items=nd.network.items,links=nd.network.links,m=nd._meta;
   const totalOcc=m.occ.reduce((a,b)=>a+b,0);
   document.getElementById('sgrid').innerHTML=[
-    ['Termos na rede',items.length,true],
-    ['Ligações',links.length,false],
-    ['Ocorrências totais',totalOcc.toLocaleString('pt-BR'),false],
-    ['Não encontrados',m.notFound.length,false],
+    ['Terms in network',items.length,true],
+    ['Links',links.length,false],
+    ['Total occurrences',totalOcc.toLocaleString('en-GB'),false],
+    ['Not found',m.notFound.length,false],
     ['PDFs',m.docs.length,false],
   ].map(([l,v,h])=>`<div class="sc"><span class="sl">${l}</span><span class="sv${h?' hi':''}">${v}</span></div>`).join('');
 
-  const gByLabel={};m.groups.forEach((g,gi)=>gByLabel[g.label]={cat:g.category||'(sem categoria)',occ:m.occ[gi]});
+  const gByLabel={};m.groups.forEach((g,gi)=>gByLabel[g.label]={cat:g.category||'(uncategorised)',occ:m.occ[gi]});
   const sorted=[...items].sort((a,b)=>b.weights.Occurrences-a.weights.Occurrences);
   document.getElementById('net-items').innerHTML=sorted.map(it=>{
-    const cat=gByLabel[it.label]?gByLabel[it.label].cat:'(sem categoria)';
+    const cat=gByLabel[it.label]?gByLabel[it.label].cat:'(uncategorised)';
     const col=m.catColor[cat]||'#64748B';
     return `<span class="ni"><span class="dot" style="background:${col}"></span>${esc(it.label)} <span class="nc">${it.weights.Occurrences} · ${it.weights.Documents} doc</span></span>`;
   }).join('');
 
   const nf=document.getElementById('notfound');
-  nf.innerHTML=m.notFound.length?`<div class="notfound"><div class="nf-t">Termos com zero ocorrências (${m.notFound.length})</div><div class="nf-list">${m.notFound.map(t=>`<span class="nf-i">${esc(t)}</span>`).join('')}</div></div>`:'';
+  nf.innerHTML=m.notFound.length?`<div class="notfound"><div class="nf-t">Terms with zero occurrences (${m.notFound.length})</div><div class="nf-list">${m.notFound.map(t=>`<span class="nf-i">${esc(t)}</span>`).join('')}</div></div>`:'';
 
   document.getElementById('results').style.display='block';
   document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
@@ -706,47 +734,58 @@ function csvCell(s){return '"'+String(s).replace(/"/g,'""')+'"'}
 function downloadMatrix(){
   if(!netData)return;
   const m=netData._meta;
-  let csv='Termo,Categoria,'+m.docs.map(d=>csvCell(d.name)).join(',')+',Total,Documentos\n';
+  let csv='Term,Category,'+m.docs.map(d=>csvCell(d.name)).join(',')+',Total,Documents\n';
   m.groups.forEach((g,gi)=>{
     const row=m.matrix.map(r=>r[gi]);
     csv+=csvCell(g.label)+','+csvCell(g.category||'')+','+row.join(',')+','+m.occ[gi]+','+m.docf[gi]+'\n';
   });
-  downloadBlob(csv,'matriz-termo-documento.csv','text/csv');
-  toast('Matriz exportada');
+  downloadBlob(csv,'term-document-matrix.csv','text/csv');
+  toast('Matrix exported');
 }
 function downloadFreq(){
   if(!netData)return;
   const m=netData._meta;
-  let csv='Termo,Categoria,Ocorrencias,Documentos\n';
+  let csv='Term,Category,Occurrences,Documents\n';
   m.groups.forEach((g,gi)=>{csv+=csvCell(g.label)+','+csvCell(g.category||'')+','+m.occ[gi]+','+m.docf[gi]+'\n';});
-  downloadBlob(csv,'frequencias-termos.csv','text/csv');
-  toast('Frequências exportadas');
+  downloadBlob(csv,'term-frequencies.csv','text/csv');
+  toast('Frequencies exported');
+}
+function exportThesaurus(){
+  const groups=parseTerms(document.getElementById('kw-input').value);
+  if(!groups.length){showMsg('Enter at least one term first.');return}
+  let csv='Term,Category,Source,Synonyms\n';
+  groups.forEach(g=>{
+    const others=g.variants.filter(v=>norm(v)!==norm(g.label));
+    csv+=csvCell(g.label)+','+csvCell(g.category||'')+','+csvCell(g.fromLib?'library':'manual')+','+csvCell(others.join('; '))+'\n';
+  });
+  downloadBlob(csv,'thesaurus.csv','text/csv');
+  toast('Thesaurus exported');
 }
 function openVOS(){
-  if(!netData){showMsg('Gere a rede primeiro.');return}
+  if(!netData){showMsg('Generate the network first.');return}
   downloadJSON();document.getElementById('modal').style.display='flex';
 }
 function closeModal(e){if(e.target===document.getElementById('modal'))closeModalDirect()}
 function closeModalDirect(){document.getElementById('modal').style.display='none'}
 
-/* ---------- lista de termos: exemplo / salvar / carregar ---------- */
+/* ---------- term list: example / save / load ---------- */
 function loadExample(){
   document.getElementById('kw-input').value=
 `CO2
-GEE
-qualidade do ar
+GHG
+air quality
 SOx
-eficiência energética
+energy efficiency
 shore power
-energia renovável
-água de lastro
-gestão de resíduos
-dragagem
-ruído
-biodiversidade
+renewable energy
+ballast water
+waste management
+dredging
+noise
+biodiversity
 ESG
-materialidade
-ODS`;
+materiality
+SDGs`;
   document.getElementById('auto-expand').checked=true;
   renderKwPreview();
 }
@@ -763,20 +802,20 @@ function toggleLib(){
     es.forEach(e=>{html+=`<span class="kw-term" title="${esc(e.variants.join(' | '))}" style="cursor:pointer" onclick="addLibTerm('${esc(e.label).replace(/'/g,"\\'")}')">${esc(e.label)} <span>+${e.variants.length-1}</span></span>`;});
     html+='</div></div>';
   });
-  html+=`<p class="param-hint">Biblioteca com ${THESAURUS.length} termos da área. Clique num termo para adicioná-lo à sua lista.</p></div>`;
+  html+=`<p class="param-hint">Library with ${THESAURUS.length} domain terms. Click a term to add it to your list.</p></div>`;
   b.innerHTML=html;b.style.display='block';
 }
 function addLibTerm(label){
   const ta=document.getElementById('kw-input');
   const lines=ta.value.split('\n').map(l=>l.trim());
-  if(lines.some(l=>norm(l)===norm(label))){toast('Termo já está na lista');return}
+  if(lines.some(l=>norm(l)===norm(label))){toast('Term is already in the list');return}
   ta.value=(ta.value.trim()?ta.value.replace(/\s*$/,'')+'\n':'')+label;
-  renderKwPreview();toast('Termo adicionado');
+  renderKwPreview();toast('Term added');
 }
 function downloadKw(){
   const v=document.getElementById('kw-input').value;
-  if(!v.trim()){showMsg('Nada para salvar.');return}
-  downloadBlob(v,'termos-busca.txt','text/plain');toast('Lista salva');
+  if(!v.trim()){showMsg('Nothing to save.');return}
+  downloadBlob(v,'search-terms.txt','text/plain');toast('List saved');
 }
 
 /* ---------- listeners ---------- */
@@ -791,7 +830,7 @@ document.getElementById('kw-input').addEventListener('input',renderKwPreview);
 document.getElementById('auto-expand').addEventListener('change',renderKwPreview);
 document.getElementById('kw-file').addEventListener('change',function(e){
   const f=e.target.files[0];if(!f)return;
-  const r=new FileReader();r.onload=()=>{document.getElementById('kw-input').value=r.result;renderKwPreview();toast('Lista carregada')};r.readAsText(f);this.value='';
+  const r=new FileReader();r.onload=()=>{document.getElementById('kw-input').value=r.result;renderKwPreview();toast('List loaded')};r.readAsText(f);this.value='';
 });
 renderKwPreview();
 </script>

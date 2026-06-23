@@ -18,17 +18,22 @@ It complements [PDFWords](../textminingprojeto1), which performs open extraction
 
 ## Features
 
+- Two clearly separated areas for full methodological transparency: **area A**, where you type the keywords you want, and **area B**, where the app shows the synonyms it generated for each one (your study's thesaurus)
 - Upload of multiple PDFs by drag & drop (text extraction is 100% local)
 - You type one term per line; the app expands the synonyms automatically
-- Built-in maritime and port sustainability term library (Brazilian Portuguese + English)
+- Built-in maritime and port sustainability term library (English labels, English + Portuguese variants)
 - Manual synonym grouping with `=` (advanced mode, takes priority)
 - Thematic categories with `[ ]` that become coloured clusters in VOSviewer
 - Compound-term search (e.g. `shore power`) and wildcards (`emission*`)
 - Case-insensitive and accent-insensitive matching
 - Binary counting per document or co-occurrence per sentence
 - Coverage diagnostics: lists the terms with zero occurrences
-- Exports: VOSviewer JSON, term × document matrix (CSV), frequencies (CSV)
+- Exports: VOSviewer JSON, **thesaurus mapping (CSV)** for the methods section, term × document matrix (CSV), frequencies (CSV)
 - Save and load term lists (.txt)
+
+## Reproducibility for publication
+
+For a Q1 submission, the term-to-synonym mapping must be auditable. Area B always shows, per term, exactly which variants will be counted, and the **Export thesaurus (CSV)** button produces a table (term, category, source library/manual, synonyms) that can be included as supplementary material or in the methods section. Together with the term × document matrix, this makes the whole counting procedure transparent and reproducible.
 
 ---
 
